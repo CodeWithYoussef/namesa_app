@@ -1,0 +1,1 @@
+{"flutter":{"platforms":{"android":{"default":{"projectId":"namesa-app","appId":"1:155220558968:android:75d3bf673261714dd1598d","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"namesa-app","configurations":{"android":"1:155220558968:android:75d3bf673261714dd1598d","ios":"1:155220558968:ios:db688a15bf16b201d1598d"}}}}}}

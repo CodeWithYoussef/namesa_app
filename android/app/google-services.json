@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "155220558968",
+    "project_id": "namesa-app",
+    "storage_bucket": "namesa-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155220558968:android:75d3bf673261714dd1598d",
+        "android_client_info": {
+          "package_name": "com.example.namesa_yassin_preoject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpJQtaNu3hZOvuZGjfsF4OOoQcjGn7l6A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
