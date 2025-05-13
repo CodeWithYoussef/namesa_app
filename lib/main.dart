@@ -9,10 +9,12 @@ import 'package:provider/provider.dart';
 import 'auth screens/auth_screen.dart';
 import 'firebase_options.dart';
 import 'home screens/home_screen.dart';
+import 'home screens/reserve screens/reserve_room.dart';
 import 'home screens/tabs/Reservations _tab.dart';
 import 'home screens/tabs/home_tab.dart';
-import 'home screens/tabs/offers_tab.dart';
+import 'home screens/tabs/favourites_tab.dart';
 import 'home screens/tabs/profile_tab.dart';
+import 'models/hotel_room_model.dart';
 import 'models/hotel_rooms.dart'; // ✅ Import your HotelRooms model
 
 void main() async {
@@ -54,9 +56,14 @@ class MyApp extends StatelessWidget {
         AuthScreen.routeName: (context) => const AuthScreen(),
         HomeScreen.routeName: (context) => const HomeScreen(),
         HomeTab.routeName: (context) => HomeTab(),
-        OffersTab.routeName: (context) => const OffersTab(),
+        FavouritesTab.routeName: (context) => const FavouritesTab(),
         ReservationsTab.routeName: (context) => const ReservationsTab(),
         ProfileTab.routeName: (context) => const ProfileTab(),
+        ReserveRoom.routeName:
+            (context) => ReserveRoom(
+              hotelRoom:
+                  ModalRoute.of(context)!.settings.arguments as HotelRoom,
+            ),
       },
       initialRoute: HomeScreen.routeName,
     );

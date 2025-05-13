@@ -4,8 +4,9 @@ import 'resturant_model.dart';
 
 class HotelRooms extends ChangeNotifier {
   // ------------------ ROOMS ------------------
-  final List<HotelRoom> _allRooms = [
+  final _allRooms = <HotelRoom>[
     HotelRoom(
+      id: "room_royal_suite",
       name: "Royal suite",
       price: 6000,
       imagePath: "assets/rooms/Royal suite.jpg",
@@ -16,6 +17,7 @@ class HotelRooms extends ChangeNotifier {
       wifi: true,
     ),
     HotelRoom(
+      id: "room_suite",
       name: "Suite",
       price: 625,
       imagePath: "assets/rooms/suite.jpg",
@@ -26,6 +28,7 @@ class HotelRooms extends ChangeNotifier {
       gym: true,
     ),
     HotelRoom(
+      id: "room_king",
       name: "King",
       price: 460,
       imagePath: "assets/rooms/king.jpg",
@@ -36,6 +39,7 @@ class HotelRooms extends ChangeNotifier {
       wifi: true,
     ),
     HotelRoom(
+      id: "room_double",
       name: "Double",
       price: 406,
       imagePath: "assets/rooms/double.jpg",
@@ -46,6 +50,7 @@ class HotelRooms extends ChangeNotifier {
       gym: false,
     ),
     HotelRoom(
+      id: "room_single",
       name: "Single",
       price: 350,
       imagePath: "assets/rooms/single.jpg",
@@ -83,7 +88,7 @@ class HotelRooms extends ChangeNotifier {
 
   // ------------------ RESTAURANTS ------------------
 
-  final List<ResturantModel> _allRestaurants = [
+  final _allRestaurants = <ResturantModel>[
     ResturantModel(
       name: "Golden Palace",
       imagePath: "assets/RESTURANTS/Golden Palac.jpg",
@@ -117,9 +122,9 @@ class HotelRooms extends ChangeNotifier {
     ResturantModel(
       name: "Rehab Palace",
       imagePath: "assets/RESTURANTS/Rehab Horizon.jpg",
-      menuPath1: "assets/menus/Rehab Horizon menu 1.jpg",
-      menuPath2: "assets/menus/Rehab Horizon menu 2.jpg",
-      menuPath3: "assets/menus/Rehab Horizon menu 3.jpg",
+      menuPath1: "",
+      menuPath2: "",
+      menuPath3: "",
       rating: 4.9,
       reviews: 930,
       description: "Roof Cafe.",
@@ -135,6 +140,21 @@ class HotelRooms extends ChangeNotifier {
       description: "Asian Cuisine.",
     ),
   ];
+
+  final List<String> _menu = [
+    "assets/menus/Rehab Horizon menu 1.jpg",
+    "assets/menus/Rehab Horizon menu 2.jpg",
+    "assets/menus/Rehab Horizon menu 3.jpg",
+    "assets/menus/imperial dragon 1.jpg",
+    "assets/menus/imperial dragon 2.jpg",
+    "assets/menus/imperial dragon 3.jpg",
+    "assets/menus/imperial dragon 4.jpg",
+    "assets/menus/flame royal 1.jpg",
+    "assets/menus/flame royal 2.jpg",
+    "assets/menus/flame royal 3.jpg",
+  ];
+
+  List<String> get menu => _menu; // Getter for _menu
 
   List<ResturantModel> _filteredRestaurants = [];
 
@@ -162,7 +182,7 @@ class HotelRooms extends ChangeNotifier {
   bool isFavouriteRestaurant(ResturantModel restaurant) =>
       _favouriteRestaurants.contains(restaurant);
 
-  // ------------------ SEARCH ------------------
+  // ------------------ SEARCH ------------------ //
 
   void search(String query) {
     if (query.isEmpty) {
@@ -172,9 +192,7 @@ class HotelRooms extends ChangeNotifier {
       _filteredRooms =
           _allRooms
               .where(
-                (room) =>
-                    room.name?.toLowerCase().contains(query.toLowerCase()) ??
-                    false,
+                (room) => room.name.toLowerCase().contains(query.toLowerCase()),
               )
               .toList();
 
@@ -190,4 +208,47 @@ class HotelRooms extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  // ------------------ RESERVED ROOMS ------------------
+  final List<HotelRoom> _reservedRooms = [];
+
+  List<HotelRoom> get reservedRooms => List.unmodifiable(_reservedRooms);
+
+  void reserveRoom(HotelRoom room) {
+    if (!_reservedRooms.contains(room)) {
+      _reservedRooms.add(room);
+      notifyListeners();
+    }
+  }
+
+  void cancelRoomReservation(HotelRoom room) {
+    if (_reservedRooms.remove(room)) {
+      notifyListeners();
+    }
+  }
+
+  bool isRoomReserved(HotelRoom room) => _reservedRooms.contains(room);
+
+  // ------------------ RESERVED RESTAURANTS ------------------
+  final List<ResturantModel> _reservedRestaurants = [];
+
+  List<ResturantModel> get reservedRestaurants =>
+      List.unmodifiable(_reservedRestaurants);
+
+  void reserveRestaurant(ResturantModel restaurant) {
+    if (!_reservedRestaurants.contains(restaurant)) {
+      _reservedRestaurants.add(restaurant);
+      debugPrint("$reservedRestaurants");
+      notifyListeners();
+    }
+  }
+
+  void cancelRestaurantReservation(ResturantModel restaurant) {
+    if (_reservedRestaurants.remove(restaurant)) {
+      notifyListeners();
+    }
+  }
+
+  bool isRestaurantReserved(ResturantModel restaurant) =>
+      _reservedRestaurants.contains(restaurant);
 }

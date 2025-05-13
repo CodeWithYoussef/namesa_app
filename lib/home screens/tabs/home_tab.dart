@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:namesa_yassin_preoject/home%20screens/reserve%20screens/reserve_restaurant.dart';
 import 'package:namesa_yassin_preoject/models/hotel_room_model.dart';
 import 'package:namesa_yassin_preoject/models/hotel_rooms.dart';
 import 'package:namesa_yassin_preoject/models/resturant_model.dart';
@@ -7,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../widgets/resturanant_item.dart';
 import '../../widgets/rooms_item.dart';
 import '../../widgets/search_bar_widget.dart';
+import '../reserve screens/reserve_room.dart';
 
 class HomeTab extends StatefulWidget {
   static const String routeName = "home tab";
@@ -54,7 +56,7 @@ class _HomeTabState extends State<HomeTab> {
                                   .copyWith(color: Colors.white),
                             ),
                             const Spacer(),
-                            Icon(Icons.notifications_active_outlined, size: 25),
+                            Icon(Icons.notifications_active_outlined, size: 30),
                           ],
                         ),
 
@@ -95,7 +97,18 @@ class _HomeTabState extends State<HomeTab> {
                                 itemBuilder: (context, index) {
                                   HotelRoom eachRoom = value.allRooms[index];
                                   return RoomsItem(
-                                    onTap: () {},
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => ReserveRoom(
+                                                hotelRoom:
+                                                    value.allRooms[index],
+                                              ),
+                                        ),
+                                      );
+                                    },
                                     hotelRoom: eachRoom,
                                     icon: Icon(Icons.favorite_border),
                                   );
@@ -138,7 +151,18 @@ class _HomeTabState extends State<HomeTab> {
                                   ResturantModel eachResturant =
                                       value.allResturant[index];
                                   return RestaurantItem(
-                                    onTap: () {},
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => ReserveRestaurant(
+                                                resturantModel:
+                                                    value.allResturant[index],
+                                              ),
+                                        ),
+                                      );
+                                    },
                                     hotelResturant: eachResturant,
                                     icon: Icon(Icons.favorite_border),
                                   );
