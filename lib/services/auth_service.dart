@@ -3,11 +3,7 @@ import 'package:namesa_yassin_preoject/models/guest_model.dart';
 ///auth services functions
 abstract class AuthService {
   ///login
-  Future<GuestModel?> loginWithEmailAndPassword(
-    String email,
-    String password,
-    String name,
-  );
+  Future<GuestModel?> loginWithEmailAndPassword(String email, String password);
 
   ///register
   Future<GuestModel?> registerWithEmailAndPassword(
@@ -23,7 +19,7 @@ abstract class AuthService {
   Future<GuestModel?> getCurrentUser();
 
   ///send reset email
-  Future<String> sendResetEmail();
+  Future<String> sendResetEmail(String email);
 
   ///delete account
   Future<void> deleteAccount();

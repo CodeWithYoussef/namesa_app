@@ -1,5 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart'; // Make sure to use .svg files with this
+import 'package:namesa_yassin_preoject/models/guest_model.dart';
+
+import '../auth provider/auth_provider.dart';
+import '../home screens/tabs/home_tab.dart';
+import '../services/auth_service.dart';
 
 class AuthScreen extends StatefulWidget {
   static const String routeName = "AuthScreen";
@@ -14,6 +19,7 @@ class _AuthScreenState extends State<AuthScreen> {
   bool isSignUp = true;
   bool isSecured1 = true;
   bool isSecured2 = true;
+  final nameControllerSignUp = TextEditingController();
   final emailControllingSighUp = TextEditingController();
   final emailControllingLogIn = TextEditingController();
   final passwordControllingSighUp = TextEditingController();
@@ -85,10 +91,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                   child: Text(
                                     "Sign Up",
                                     style: TextStyle(
-                                      color:
-                                          isSignUp
-                                              ? Colors.white
-                                              : Colors.black,
+                                      color: Theme.of(context).focusColor,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -115,10 +118,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                   child: Text(
                                     "Log In",
                                     style: TextStyle(
-                                      color:
-                                          !isSignUp
-                                              ? Colors.white
-                                              : Colors.black,
+                                      color: Theme.of(context).focusColor,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -129,6 +129,31 @@ class _AuthScreenState extends State<AuthScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
+
+                      if (isSignUp)
+                        /// Name
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Name Is Required";
+                              }
+                              return null;
+                            },
+                            onTapOutside:
+                                (event) => FocusScope.of(context).unfocus(),
+                            controller: nameControllerSignUp,
+                            style: Theme.of(context).textTheme.bodyMedium!
+                                .copyWith(color: Colors.black),
+                            decoration: InputDecoration(
+                              hintText: 'Enter Your Name',
+                              hintStyle: Theme.of(context).textTheme.bodyMedium!
+                                  .copyWith(color: Colors.black),
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: 10),
 
                       /// Email
                       Padding(
@@ -152,10 +177,15 @@ class _AuthScreenState extends State<AuthScreen> {
                               isSignUp
                                   ? emailControllingSighUp
                                   : emailControllingLogIn,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          onTapOutside:
+                              (event) => FocusScope.of(context).unfocus(),
+
+                          style: Theme.of(context).textTheme.bodyMedium!
+                              .copyWith(color: Colors.black),
                           decoration: InputDecoration(
                             hintText: 'Enter email or username',
-                            hintStyle: Theme.of(context).textTheme.bodyMedium,
+                            hintStyle: Theme.of(context).textTheme.bodyMedium!
+                                .copyWith(color: Colors.black),
                           ),
                         ),
                       ),
@@ -178,11 +208,16 @@ class _AuthScreenState extends State<AuthScreen> {
                               isSignUp
                                   ? passwordControllingSighUp
                                   : passwordControllingLogIn,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          onTapOutside:
+                              (event) => FocusScope.of(context).unfocus(),
+
+                          style: Theme.of(context).textTheme.bodyMedium!
+                              .copyWith(color: Colors.black),
                           obscureText: isSecured1,
                           decoration: InputDecoration(
                             hintText: 'Password',
-                            hintStyle: Theme.of(context).textTheme.bodyMedium,
+                            hintStyle: Theme.of(context).textTheme.bodyMedium!
+                                .copyWith(color: Colors.black),
                             suffixIcon: GestureDetector(
                               onTap: () {
                                 setState(() {
@@ -218,8 +253,12 @@ class _AuthScreenState extends State<AuthScreen> {
                               }
                               return null;
                             },
+                            onTapOutside:
+                                (event) => FocusScope.of(context).unfocus(),
+
                             controller: confirmPasswordControllingSighUp,
-                            style: Theme.of(context).textTheme.bodyMedium,
+                            style: Theme.of(context).textTheme.bodyMedium!
+                                .copyWith(color: Colors.black),
                             obscureText: isSecured2,
                             decoration: InputDecoration(
                               suffixIcon: GestureDetector(
@@ -235,7 +274,8 @@ class _AuthScreenState extends State<AuthScreen> {
                                 ),
                               ),
                               hintText: 'Confirm Password',
-                              hintStyle: Theme.of(context).textTheme.bodyMedium,
+                              hintStyle: Theme.of(context).textTheme.bodyMedium!
+                                  .copyWith(color: Colors.black),
                             ),
                           ),
                         ),
@@ -244,8 +284,113 @@ class _AuthScreenState extends State<AuthScreen> {
 
                       /// Submit
                       ElevatedButton(
-                        onPressed: () {
-                          if (formKey.currentState!.validate()) {}
+                        onPressed: () async {
+                          if (formKey.currentState!.validate()) {
+                            // Show loading dialog before async operation
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder:
+                                  (BuildContext context) => const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                            );
+
+                            final AuthService auth = AuthenticationProvider();
+                            GuestModel? guest;
+
+                            try {
+                              if (isSignUp) {
+                                guest = await auth.registerWithEmailAndPassword(
+                                  emailControllingSighUp.text.trim(),
+                                  passwordControllingSighUp.text.trim(),
+                                  nameControllerSignUp.text.trim(),
+                                );
+                              } else {
+                                guest = await auth.loginWithEmailAndPassword(
+                                  emailControllingLogIn.text.trim(),
+                                  passwordControllingLogIn.text.trim(),
+                                );
+                              }
+                            } catch (e) {
+                              debugPrint('Error: $e');
+                            } finally {
+                              // Close the loading dialog only if the widget is still mounted
+                              if (mounted) {
+                                Navigator.pop(
+                                  context,
+                                ); // Close the loading dialog
+                              }
+                            }
+
+                            if (guest != null) {
+                              // Successful login/signup, navigate to the home screen
+                              Navigator.pushNamed(context, HomeTab.routeName);
+                            } else {
+                              // Show an error dialog if registration/login fails
+                              showDialog(
+                                context: context,
+                                builder:
+                                    (context) => AlertDialog(
+                                      backgroundColor: Colors.white,
+                                      title: Container(
+                                        width: 50,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ),
+                                          color: Theme.of(context).focusColor,
+                                        ),
+                                        child: Icon(
+                                          Icons.error_outline,
+                                          color: Colors.white,
+                                          size: 30,
+                                        ),
+                                      ),
+                                      content: Text(
+                                        'Login/Registration failed. Please check your credentials or verify your email.',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall!
+                                            .copyWith(color: Colors.black),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Container(
+                                            height: 50,
+                                            width: 70,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  Theme.of(
+                                                    context,
+                                                  ).scaffoldBackgroundColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                'OK',
+                                                style: Theme.of(
+                                                  context,
+                                                ).textTheme.bodySmall!.copyWith(
+                                                  color:
+                                                      Theme.of(
+                                                        context,
+                                                      ).focusColor,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                              );
+                            }
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,

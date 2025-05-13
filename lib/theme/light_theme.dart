@@ -15,6 +15,10 @@ class LightTheme extends BaseTheme {
   @override
   Color get focusColor => Color(0xffBE7C01);
 
+  Color get shadowColor => Color(0x38F5F5F5);
+
+  Color get cardColor => Color(0xffD9D9D9);
+
   @override
   ThemeData get themeData => ThemeData(
     ///bg color
@@ -26,9 +30,15 @@ class LightTheme extends BaseTheme {
     ///focusColor
     focusColor: focusColor,
 
+    ///shadow Color
+    shadowColor: shadowColor,
+
+    ///cardColor
+    cardColor: cardColor,
+
     ///bottom navigationBar
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      backgroundColor: primaryColor,
+      backgroundColor: backgroundColor,
       type: BottomNavigationBarType.fixed,
       showUnselectedLabels: true,
       showSelectedLabels: true,
@@ -44,22 +54,22 @@ class LightTheme extends BaseTheme {
       bodyLarge: GoogleFonts.kurale(
         fontSize: 25,
         fontWeight: FontWeight.bold,
-        color: Colors.black,
+        color: Colors.white,
       ),
       bodyMedium: GoogleFonts.kurale(
         fontSize: 22,
         fontWeight: FontWeight.w400,
-        color: Colors.black,
+        color: Colors.white,
       ),
       bodySmall: GoogleFonts.kurale(
         fontSize: 17,
         fontWeight: FontWeight.w400,
-        color: Colors.black,
+        color: Colors.white,
       ),
       titleSmall: GoogleFonts.kurale(
         fontSize: 14,
         fontWeight: FontWeight.w400,
-        color: Colors.black,
+        color: Colors.white,
       ),
     ),
   );
