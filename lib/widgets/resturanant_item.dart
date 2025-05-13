@@ -132,7 +132,14 @@ class RestaurantItem extends StatelessWidget {
                   /// Empty Features Row (can be filled later)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [],
+                    children: [
+                      Text(
+                        "${hotelResturant.description}",
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: Theme.of(context).focusColor,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

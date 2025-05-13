@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
       routes: {
         AuthScreen.routeName: (context) => const AuthScreen(),
         HomeScreen.routeName: (context) => const HomeScreen(),
-        HomeTab.routeName: (context) => const HomeTab(),
+        HomeTab.routeName: (context) => HomeTab(),
         OffersTab.routeName: (context) => const OffersTab(),
         ReservationsTab.routeName: (context) => const ReservationsTab(),
         ProfileTab.routeName: (context) => const ProfileTab(),

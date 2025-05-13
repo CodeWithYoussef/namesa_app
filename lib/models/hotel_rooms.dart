@@ -1,11 +1,10 @@
 import 'package:flutter/cupertino.dart';
-import 'package:namesa_yassin_preoject/models/hotel_room_model.dart';
-import 'package:namesa_yassin_preoject/models/resturant_model.dart';
+import 'hotel_room_model.dart';
+import 'resturant_model.dart';
 
 class HotelRooms extends ChangeNotifier {
   // ------------------ ROOMS ------------------
-
-  final List<HotelRoom> allRooms = [
+  final List<HotelRoom> _allRooms = [
     HotelRoom(
       name: "Royal suite",
       price: 6000,
@@ -58,7 +57,13 @@ class HotelRooms extends ChangeNotifier {
     ),
   ];
 
+  List<HotelRoom> _filteredRooms = [];
+
+  List<HotelRoom> get allRooms =>
+      _filteredRooms.isEmpty ? _allRooms : _filteredRooms;
+
   final List<HotelRoom> _favouriteRooms = [];
+
   List<HotelRoom> get favouriteRooms => List.unmodifiable(_favouriteRooms);
 
   void addToFavouriteRooms(HotelRoom room) {
@@ -74,31 +79,11 @@ class HotelRooms extends ChangeNotifier {
     }
   }
 
-  bool isFavouriteRoom(HotelRoom room) {
-    return _favouriteRooms.contains(room);
-  }
+  bool isFavouriteRoom(HotelRoom room) => _favouriteRooms.contains(room);
 
   // ------------------ RESTAURANTS ------------------
 
-  final List<ResturantModel> allResturant = [
-    ResturantModel(
-      name: "Atlas Palace",
-      imagePath: "assets/RESTURANTS/Atlas Palace.jpg",
-      menuPath1: "",
-      menuPath2: "",
-      menuPath3: "",
-      rating: 4.7,
-      reviews: 360,
-    ),
-    ResturantModel(
-      name: "Flame Of Royale",
-      imagePath: "assets/RESTURANTS/Flame Of Royale.jpg",
-      menuPath1: "",
-      menuPath2: "",
-      menuPath3: "",
-      rating: 4.8,
-      reviews: 480,
-    ),
+  final List<ResturantModel> _allRestaurants = [
     ResturantModel(
       name: "Golden Palace",
       imagePath: "assets/RESTURANTS/Golden Palac.jpg",
@@ -107,6 +92,27 @@ class HotelRooms extends ChangeNotifier {
       menuPath3: "",
       rating: 4.5,
       reviews: 320,
+      description: "The Main Hotel restaurant.",
+    ),
+    ResturantModel(
+      name: "Atlas Palace",
+      imagePath: "assets/RESTURANTS/Atlas Palace.jpg",
+      menuPath1: "",
+      menuPath2: "",
+      menuPath3: "",
+      rating: 4.7,
+      reviews: 360,
+      description: "Western Restaurant Cuisine.",
+    ),
+    ResturantModel(
+      name: "Flame Of Royal",
+      imagePath: "assets/RESTURANTS/Flame Of Royale.jpg",
+      menuPath1: "",
+      menuPath2: "",
+      menuPath3: "",
+      rating: 4.8,
+      reviews: 480,
+      description: "Grill And Steak House.",
     ),
     ResturantModel(
       name: "Rehab Palace",
@@ -116,6 +122,7 @@ class HotelRooms extends ChangeNotifier {
       menuPath3: "assets/menus/Rehab Horizon menu 3.jpg",
       rating: 4.9,
       reviews: 930,
+      description: "Roof Cafe.",
     ),
     ResturantModel(
       name: "The Impier Dragon",
@@ -125,11 +132,19 @@ class HotelRooms extends ChangeNotifier {
       menuPath3: "",
       rating: 4.4,
       reviews: 1060,
+      description: "Asian Cuisine.",
     ),
   ];
 
+  List<ResturantModel> _filteredRestaurants = [];
+
+  List<ResturantModel> get allResturant =>
+      _filteredRestaurants.isEmpty ? _allRestaurants : _filteredRestaurants;
+
   final List<ResturantModel> _favouriteRestaurants = [];
-  List<ResturantModel> get favouriteRestaurants => List.unmodifiable(_favouriteRestaurants);
+
+  List<ResturantModel> get favouriteRestaurants =>
+      List.unmodifiable(_favouriteRestaurants);
 
   void addToFavouriteRestaurants(ResturantModel restaurant) {
     if (!_favouriteRestaurants.contains(restaurant)) {
@@ -144,7 +159,35 @@ class HotelRooms extends ChangeNotifier {
     }
   }
 
-  bool isFavouriteRestaurant(ResturantModel restaurant) {
-    return _favouriteRestaurants.contains(restaurant);
+  bool isFavouriteRestaurant(ResturantModel restaurant) =>
+      _favouriteRestaurants.contains(restaurant);
+
+  // ------------------ SEARCH ------------------
+
+  void search(String query) {
+    if (query.isEmpty) {
+      _filteredRooms = [];
+      _filteredRestaurants = [];
+    } else {
+      _filteredRooms =
+          _allRooms
+              .where(
+                (room) =>
+                    room.name?.toLowerCase().contains(query.toLowerCase()) ??
+                    false,
+              )
+              .toList();
+
+      _filteredRestaurants =
+          _allRestaurants
+              .where(
+                (rest) =>
+                    rest.name?.toLowerCase().contains(query.toLowerCase()) ??
+                    false,
+              )
+              .toList();
+    }
+
+    notifyListeners();
   }
 }

@@ -17,11 +17,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0; // ✅ Move this INSIDE the state class
 
-  List<Widget> tabs = const [
+  List<Widget> tabs = [
     HomeTab(),
-    OffersTab(),
-    ReservationsTab(),
-    ProfileTab(),
+    const OffersTab(),
+    const ReservationsTab(),
+    const ProfileTab(),
   ];
 
   @override

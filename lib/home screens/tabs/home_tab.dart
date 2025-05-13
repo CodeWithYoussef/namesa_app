@@ -18,6 +18,14 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
+  final TextEditingController searchBarController = TextEditingController();
+
+  @override
+  void dispose() {
+    searchBarController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -28,7 +36,7 @@ class _HomeTabState extends State<HomeTab> {
           body: Consumer<HotelRooms>(
             builder:
                 (context, value, child) => SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
+                  physics: ClampingScrollPhysics(),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 22),
                     child: Column(
@@ -53,7 +61,9 @@ class _HomeTabState extends State<HomeTab> {
                         SizedBox(height: 15),
 
                         /// Search bar
-                        SearchBarWidget(),
+                        SearchBarWidget(
+                          textEditingController: searchBarController,
+                        ),
 
                         SizedBox(height: 43),
 
@@ -62,40 +72,41 @@ class _HomeTabState extends State<HomeTab> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Popular Rooms",
+                              "Available Rooms",
                               style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                            Text(
-                              "See All",
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodyLarge!.copyWith(fontSize: 15),
                             ),
                           ],
                         ),
 
                         SizedBox(height: 25),
 
-                        /// Horizontal ListView of rooms
-                        SizedBox(
-                          height: 340,
-                          child: ListView.separated(
-                            itemBuilder: (context, index) {
-                              HotelRoom eachRoom = value.allRooms[index];
-                              return RoomsItem(
-                                onTap: () {},
-                                hotelRoom: eachRoom,
-                                icon: Icon(Icons.favorite_border),
-                              );
-                            },
-                            separatorBuilder:
-                                (context, index) => SizedBox(width: 16),
-                            scrollDirection: Axis.horizontal,
-                            itemCount: value.allRooms.length,
-                            physics:
-                                BouncingScrollPhysics(), // enables horizontal scroll only
-                          ),
-                        ),
+                        /// Horizontal ListView of rooms or no result
+                        value.allRooms.isEmpty
+                            ? Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                "No rooms found",
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            )
+                            : SizedBox(
+                              height: 340,
+                              child: ListView.separated(
+                                itemBuilder: (context, index) {
+                                  HotelRoom eachRoom = value.allRooms[index];
+                                  return RoomsItem(
+                                    onTap: () {},
+                                    hotelRoom: eachRoom,
+                                    icon: Icon(Icons.favorite_border),
+                                  );
+                                },
+                                separatorBuilder:
+                                    (context, index) => SizedBox(width: 16),
+                                scrollDirection: Axis.horizontal,
+                                itemCount: value.allRooms.length,
+                                physics: BouncingScrollPhysics(),
+                              ),
+                            ),
 
                         SizedBox(height: 16),
 
@@ -107,36 +118,38 @@ class _HomeTabState extends State<HomeTab> {
                               "Restaurants",
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
-                            Text(
-                              "See All",
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodyLarge!.copyWith(fontSize: 15),
-                            ),
                           ],
                         ),
 
                         SizedBox(height: 25),
 
-                        SizedBox(
-                          height: 340,
-                          child: ListView.separated(
-                            itemBuilder: (context, index) {
-                              ResturantModel eachResturant =
-                                  value.allResturant[index];
-                              return RestaurantItem(
-                                onTap: () {},
-                                hotelResturant: eachResturant,
-                                icon: Icon(Icons.favorite_border),
-                              );
-                            },
-                            separatorBuilder:
-                                (context, index) => SizedBox(width: 16),
-                            scrollDirection: Axis.horizontal,
-                            itemCount: value.allResturant.length,
-                            physics: BouncingScrollPhysics(),
-                          ),
-                        ),
+                        value.allResturant.isEmpty
+                            ? Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                "No restaurants found",
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            )
+                            : SizedBox(
+                              height: 340,
+                              child: ListView.separated(
+                                itemBuilder: (context, index) {
+                                  ResturantModel eachResturant =
+                                      value.allResturant[index];
+                                  return RestaurantItem(
+                                    onTap: () {},
+                                    hotelResturant: eachResturant,
+                                    icon: Icon(Icons.favorite_border),
+                                  );
+                                },
+                                separatorBuilder:
+                                    (context, index) => SizedBox(width: 16),
+                                scrollDirection: Axis.horizontal,
+                                itemCount: value.allResturant.length,
+                                physics: BouncingScrollPhysics(),
+                              ),
+                            ),
                       ],
                     ),
                   ),
