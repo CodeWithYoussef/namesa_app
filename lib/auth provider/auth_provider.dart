@@ -6,75 +6,113 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/reservation_model.dart';
 import '../services/auth_service.dart';
 
-class AuthProvider extends AuthService {
+class AuthenticationProvider extends AuthService {
   ///access the firebase
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   // % ------------------------------------------------------------------------- % //
 
-  ///delete the account
+  ///delete the account ✅
   @override
-  Future<void> deleteAccount() async {}
+  Future<void> deleteAccount() async {
+    try {
+      final user = firebaseAuth.currentUser;
+      if (user == null) {
+        throw Exception("No User Logged In");
+      }
 
-  // % ------------------------------------------------------------------------- % //
-
-  ///get Current User
-
-  @override
-  Future<GuestModel?> getCurrentUser() async {
-    return null;
+      await user.delete();
+      await logOut();
+    } catch (e) {
+      debugPrint("Error Deleting The Account: $e");
+      throw Exception("Error Deleting The Account: $e");
+    }
   }
 
   // % ------------------------------------------------------------------------- % //
 
-  ///logOut
+  ///get Current User ✅
+
   @override
-  Future<void> logOut() async {}
+  Future<GuestModel?> getCurrentUser() async {
+    final firebaseUser = firebaseAuth.currentUser;
+
+    if (firebaseUser == null) throw Exception("No User Logged In");
+
+    final uid = firebaseUser.uid;
+
+    final reservationSnapshot =
+        await FirebaseFirestore.instance
+            .collection('guests')
+            .doc(uid)
+            .collection('reservations')
+            .get();
+
+    List<ReservationModel> reservations =
+        reservationSnapshot.docs.map((doc) {
+          return ReservationModel.fromJson(doc.data());
+        }).toList();
+
+    return GuestModel(
+      id: uid,
+      name: firebaseUser.displayName ?? "Guest", // Ensure fallback value
+      mail: firebaseUser.email ?? "No Email",
+      reservations: reservations,
+    );
+  }
 
   // % ------------------------------------------------------------------------- % //
 
-  ///login With Email And Password
+  ///logOut ✅
+  @override
+  Future<void> logOut() async {
+    try {
+      await firebaseAuth.signOut();
+    } catch (e) {
+      debugPrint("Error Logging Out: $e");
+      throw Exception("Error Logging Out: $e");
+    }
+  }
+
+  // % ------------------------------------------------------------------------- % //
+
+  ///login With Email And Password ✅
   @override
   Future<GuestModel?> loginWithEmailAndPassword(
     String email,
     String password,
-    String name,
   ) async {
     try {
-      // Attempt to sign in
-      UserCredential userCredential = await firebaseAuth
-          .signInWithEmailAndPassword(email: email, password: password);
+      final userCredential = await firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-      ///user id
       String uid = userCredential.user!.uid;
 
-      // Fetch reservations from Firestore (if using subcollection)
-      QuerySnapshot reservationSnapshot =
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'lastLogin': FieldValue.serverTimestamp(),
+      });
+
+      final reservationSnapshot =
           await FirebaseFirestore.instance
               .collection('guests')
               .doc(uid)
               .collection('reservations')
               .get();
 
-      // % ------------------------------------------------------------------------- % //
-
-      ///ReservationModel list
       List<ReservationModel> reservations =
           reservationSnapshot.docs.map((doc) {
-            return ReservationModel.fromJson(
-              doc.data() as Map<String, dynamic>,
-            );
+            return ReservationModel.fromJson(doc.data());
           }).toList();
 
-      // Create and return GuestModel
-      GuestModel guestModel = GuestModel(
+      return GuestModel(
         id: uid,
-        name: name,
+        name: userCredential.user!.displayName ?? "Guest",
+        // Use displayName directly
         mail: email,
         reservations: reservations,
       );
-
-      return guestModel;
     } catch (e) {
       debugPrint('Login failed: $e');
       return null;
@@ -82,7 +120,7 @@ class AuthProvider extends AuthService {
   }
 
   // % ------------------------------------------------------------------------- % //
-  ///register With Email And Password
+  ///register With Email And Password ✅
   @override
   Future<GuestModel?> registerWithEmailAndPassword(
     String email,
@@ -90,20 +128,31 @@ class AuthProvider extends AuthService {
     String name,
   ) async {
     try {
-      ///attempt to register
-      UserCredential userCredential = await firebaseAuth
-          .createUserWithEmailAndPassword(email: email, password: password);
+      final userCredential = await firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-      ///user id
+      ///uid
       String uid = userCredential.user!.uid;
+
+      // ✅ Save user data in 'users' collection
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+        'id': uid,
+        'name': name,
+        'email': email,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      // Create GuestModel
       GuestModel guest = GuestModel(
         id: uid,
-        name: email,
+        name: name,
         mail: email,
         reservations: [],
       );
 
-      // Fetch reservations from Firestore (if using subcollection)
+      // Fetch reservations from Firestore
       QuerySnapshot reservationSnapshot =
           await FirebaseFirestore.instance
               .collection('guests')
@@ -111,7 +160,6 @@ class AuthProvider extends AuthService {
               .collection('reservations')
               .get();
 
-      ///ReservationModel list
       List<ReservationModel> reservations =
           reservationSnapshot.docs.map((doc) {
             return ReservationModel.fromJson(
@@ -119,7 +167,6 @@ class AuthProvider extends AuthService {
             );
           }).toList();
 
-      ///create user
       GuestModel guestModel = GuestModel(
         id: uid,
         name: name,
@@ -127,16 +174,33 @@ class AuthProvider extends AuthService {
         reservations: reservations,
       );
 
-      ///return user
-      return guestModel;
+      // Send verification email
+      await userCredential.user!.sendEmailVerification();
+
+      // Check if the email is verified
+      if (userCredential.user!.emailVerified) {
+        return guestModel;
+      } else {
+        // Return null or a custom error message
+        return null; // or "Please verify your email first."
+      }
     } catch (e) {
-      throw Exception("Registration Failed: $e ");
+      debugPrint("Registration Failed: $e");
+      throw Exception("Registration Failed: $e");
     }
   }
 
-  ///send Reset Email
+  // % ------------------------------------------------------------------------- % //
+
+  ///send Reset Email ✅
   @override
-  Future<String> sendResetEmail() async {
-    return "";
+  Future<String> sendResetEmail(String email) async {
+    try {
+      await firebaseAuth.sendPasswordResetEmail(email: email);
+      return "Password Reset Email Has Been Sent For $email";
+    } catch (e) {
+      debugPrint("Error Sending Reset Email: $e");
+      return "An Error Occurred: $e";
+    }
   }
 }
