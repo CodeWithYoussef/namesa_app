@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:namesa_yassin_preoject/auth%20provider/auth_provider.dart';
 import 'package:namesa_yassin_preoject/home%20screens/reserve%20screens/reserve_restaurant.dart';
 import 'package:namesa_yassin_preoject/models/hotel_room_model.dart';
 import 'package:namesa_yassin_preoject/models/hotel_rooms.dart';
@@ -30,6 +32,9 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    final userName = user?.displayName ?? user?.email?.split('@').first.trim() ?? "Guest";
+
     return SafeArea(
       child: RefreshIndicator(
         onRefresh: () => _refresh(),
@@ -51,7 +56,8 @@ class _HomeTabState extends State<HomeTab> {
                           children: [
                             const Spacer(),
                             Text(
-                              "Hello, Max",
+                              "Hello, $userName",
+                              softWrap: true,
                               style: Theme.of(context).textTheme.bodyLarge!
                                   .copyWith(color: Colors.white),
                             ),
@@ -67,7 +73,11 @@ class _HomeTabState extends State<HomeTab> {
                           textEditingController: searchBarController,
                         ),
 
-                        SizedBox(height: 43),
+                        SizedBox(height: 15),
+
+                        Divider(height: 1, color: Colors.white, thickness: 2),
+
+                        SizedBox(height: 15),
 
                         /// Popular Rooms title row
                         Row(

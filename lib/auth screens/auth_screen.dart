@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:namesa_yassin_preoject/home%20screens/home_screen.dart';
 import 'package:namesa_yassin_preoject/models/guest_model.dart';
 
 import '../auth provider/auth_provider.dart';
@@ -180,8 +181,9 @@ class _AuthScreenState extends State<AuthScreen> {
                           onTapOutside:
                               (event) => FocusScope.of(context).unfocus(),
 
-                          style: Theme.of(context).textTheme.bodyMedium!
-                              .copyWith(color: Colors.black),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium!.copyWith(color: Colors.black),
                           decoration: InputDecoration(
                             hintText: 'Enter email or username',
                             hintStyle: Theme.of(context).textTheme.bodyMedium!
@@ -211,8 +213,9 @@ class _AuthScreenState extends State<AuthScreen> {
                           onTapOutside:
                               (event) => FocusScope.of(context).unfocus(),
 
-                          style: Theme.of(context).textTheme.bodyMedium!
-                              .copyWith(color: Colors.black),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium!.copyWith(color: Colors.black),
                           obscureText: isSecured1,
                           decoration: InputDecoration(
                             hintText: 'Password',
@@ -325,7 +328,11 @@ class _AuthScreenState extends State<AuthScreen> {
 
                             if (guest != null) {
                               // Successful login/signup, navigate to the home screen
-                              Navigator.pushNamed(context, HomeTab.routeName);
+                              Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                HomeScreen.routeName,
+                                (route) => false,
+                              );
                             } else {
                               // Show an error dialog if registration/login fails
                               showDialog(
@@ -433,19 +440,62 @@ class _AuthScreenState extends State<AuthScreen> {
                                       color: Colors.black,
                                       borderRadius: BorderRadius.circular(30),
                                     ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "Sign In With Google",
-                                          style: Theme.of(
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        final authService =
+                                            AuthenticationProvider();
+                                        final userCredential =
+                                            await authService
+                                                .signInWithGoogle();
+
+                                        // Show loading dialog before async operation
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder:
+                                              (
+                                                BuildContext context,
+                                              ) => const Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
+                                        );
+
+                                        if (userCredential != null) {
+                                          Navigator.pushNamedAndRemoveUntil(
                                             context,
-                                          ).textTheme.bodyMedium!.copyWith(
-                                            color: Theme.of(context).focusColor,
+                                            HomeScreen.routeName,
+                                            (route) => false,
+                                          );
+
+                                          debugPrint(
+                                            'Signed in as: ${userCredential.user?.displayName}',
+                                          );
+                                        } else {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(content: Text('Error ❌')),
+                                          );
+                                          debugPrint('Google Sign-In failed');
+                                        }
+                                      },
+
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Sign In With Google",
+                                            style: Theme.of(
+                                              context,
+                                            ).textTheme.bodyMedium!.copyWith(
+                                              color:
+                                                  Theme.of(context).focusColor,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],

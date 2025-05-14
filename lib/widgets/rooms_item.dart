@@ -50,7 +50,7 @@ class _RoomsItemState extends State<RoomsItem> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           image: DecorationImage(
-                            image: AssetImage("${widget.hotelRoom.imagePath}"),
+                            image: AssetImage(widget.hotelRoom.imagePath),
                             fit: BoxFit.fill,
                           ),
                         ),
@@ -147,7 +147,7 @@ class _RoomsItemState extends State<RoomsItem> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Text(
-                      "${widget.hotelRoom.name}",
+                      widget.hotelRoom.name,
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: Theme.of(context).focusColor,
                       ),
@@ -179,7 +179,7 @@ class _RoomsItemState extends State<RoomsItem> {
                       Text(
                         widget.hotelRoom.wifi != false
                             ? "Provided"
-                            : "Not Provided",
+                            : "N/P",
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: Theme.of(context).focusColor,
                         ),
@@ -192,7 +192,7 @@ class _RoomsItemState extends State<RoomsItem> {
                       Text(
                         widget.hotelRoom.gym != false
                             ? "Provided"
-                            : "Not Provided",
+                            : "N/P",
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: Theme.of(context).focusColor,
                         ),

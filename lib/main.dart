@@ -2,6 +2,7 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:namesa_yassin_preoject/splash%20screen/spalsh_screen.dart';
 import 'package:namesa_yassin_preoject/theme/base_theme.dart';
 import 'package:namesa_yassin_preoject/theme/light_theme.dart';
 import 'package:provider/provider.dart';
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: lightTheme.themeData,
       routes: {
+        SplashScreen.routeName: (context) => const SplashScreen(),
         AuthScreen.routeName: (context) => const AuthScreen(),
         HomeScreen.routeName: (context) => const HomeScreen(),
         HomeTab.routeName: (context) => HomeTab(),
@@ -65,7 +67,7 @@ class MyApp extends StatelessWidget {
                   ModalRoute.of(context)!.settings.arguments as HotelRoom,
             ),
       },
-      initialRoute: HomeScreen.routeName,
+      initialRoute: AuthScreen.routeName,
     );
   }
 }
