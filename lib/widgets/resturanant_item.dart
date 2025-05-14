@@ -130,9 +130,18 @@ class RestaurantItem extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   /// Empty Features Row (can be filled later)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${hotelResturant.description}",
+                          style: Theme.of(context).textTheme.bodySmall!
+                              .copyWith(color: Theme.of(context).focusColor),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

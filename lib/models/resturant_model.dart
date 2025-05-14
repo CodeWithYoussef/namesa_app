@@ -7,6 +7,7 @@ class ResturantModel {
   double? rating;
   double? reviews;
   bool favourite = false;
+  String? description;
 
   ResturantModel({
     required this.name,
@@ -16,5 +17,6 @@ class ResturantModel {
     required this.menuPath3,
     required this.rating,
     required this.reviews,
+    required this.description,
   });
 }

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:namesa_yassin_preoject/models/guest_model.dart';
 
 ///auth services functions
@@ -20,6 +21,9 @@ abstract class AuthService {
 
   ///send reset email
   Future<String> sendResetEmail(String email);
+
+  ///google sign in
+  Future<UserCredential?> signInWithGoogle();
 
   ///delete account
   Future<void> deleteAccount();

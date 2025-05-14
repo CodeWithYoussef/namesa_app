@@ -24,7 +24,9 @@ class _RoomsItemState extends State<RoomsItem> {
   Widget build(BuildContext context) {
     return Consumer<HotelRooms>(
       builder: (context, hotelRoomsProvider, child) {
-        bool isFavourite = hotelRoomsProvider.favouriteRooms.contains(widget.hotelRoom);
+        bool isFavourite = hotelRoomsProvider.favouriteRooms.contains(
+          widget.hotelRoom,
+        );
 
         return Card(
           child: GestureDetector(
@@ -48,14 +50,20 @@ class _RoomsItemState extends State<RoomsItem> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           image: DecorationImage(
-                            image: AssetImage("${widget.hotelRoom.imagePath}"),
+                            image: AssetImage(widget.hotelRoom.imagePath),
                             fit: BoxFit.fill,
                           ),
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                        margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 18),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 4,
+                          horizontal: 4,
+                        ),
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 20,
+                          horizontal: 18,
+                        ),
                         width: 112,
                         height: 32,
                         decoration: BoxDecoration(
@@ -64,7 +72,7 @@ class _RoomsItemState extends State<RoomsItem> {
                         ),
                         child: Center(
                           child: Text(
-                            "LE ${widget.hotelRoom.price}/Day",
+                            "LE ${widget.hotelRoom.price.toInt()}/Day",
                             style: Theme.of(context).textTheme.titleSmall!
                                 .copyWith(color: Colors.white),
                           ),
@@ -75,16 +83,22 @@ class _RoomsItemState extends State<RoomsItem> {
                         top: 20,
                         child: IconButton(
                           icon: Icon(
-                            isFavourite ? Icons.favorite : Icons.favorite_border,
+                            isFavourite
+                                ? Icons.favorite
+                                : Icons.favorite_border,
                             color: isFavourite ? Colors.red : Colors.white,
                             size: 32,
                           ),
                           onPressed: () {
                             setState(() {
                               if (isFavourite) {
-                                hotelRoomsProvider.removeFromFavouriteRooms(widget.hotelRoom);
+                                hotelRoomsProvider.removeFromFavouriteRooms(
+                                  widget.hotelRoom,
+                                );
                               } else {
-                                hotelRoomsProvider.addToFavouriteRooms(widget.hotelRoom);
+                                hotelRoomsProvider.addToFavouriteRooms(
+                                  widget.hotelRoom,
+                                );
                               }
                             });
                           },
@@ -100,20 +114,27 @@ class _RoomsItemState extends State<RoomsItem> {
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Row(
                       children: [
-                        Icon(Icons.star_outlined,
-                            color: Theme.of(context).focusColor, size: 28),
+                        Icon(
+                          Icons.star_outlined,
+                          color: Theme.of(context).focusColor,
+                          size: 28,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           "${widget.hotelRoom.rating}",
-                          style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleSmall!.copyWith(
                             fontSize: 24,
                             color: Theme.of(context).focusColor,
                           ),
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          "(${widget.hotelRoom.reviews?.toInt()}) Review",
-                          style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          "(${widget.hotelRoom.reviews.toInt()}) Review",
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleSmall!.copyWith(
                             fontSize: 15,
                             color: Theme.of(context).focusColor,
                           ),
@@ -126,9 +147,10 @@ class _RoomsItemState extends State<RoomsItem> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Text(
-                      "${widget.hotelRoom.name}",
-                      style: Theme.of(context).textTheme.bodyMedium!
-                          .copyWith(color: Theme.of(context).focusColor),
+                      widget.hotelRoom.name,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: Theme.of(context).focusColor,
+                      ),
                     ),
                   ),
 
@@ -138,28 +160,42 @@ class _RoomsItemState extends State<RoomsItem> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Icon(Icons.bed, color: Theme.of(context).focusColor, size: 25),
-                      Text(
-                        "${widget.hotelRoom.numOfBeds?.toInt()}",
-                        style: Theme.of(context).textTheme.bodySmall!
-                            .copyWith(color: Theme.of(context).focusColor),
+                      Icon(
+                        Icons.bed,
+                        color: Theme.of(context).focusColor,
+                        size: 25,
                       ),
-                      Icon(Icons.wifi, color: Theme.of(context).focusColor, size: 25),
                       Text(
-                        widget.hotelRoom.wifi !=false ? "Provided" : "Not Provided",
-                        style: Theme.of(context).textTheme.bodySmall!
-                            .copyWith(color: Theme.of(context).focusColor),
-                      )
-                      ,
+                        "${widget.hotelRoom.numOfBeds.toInt()}",
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: Theme.of(context).focusColor,
+                        ),
+                      ),
+                      Icon(
+                        Icons.wifi,
+                        color: Theme.of(context).focusColor,
+                        size: 25,
+                      ),
+                      Text(
+                        widget.hotelRoom.wifi != false
+                            ? "Provided"
+                            : "N/P",
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: Theme.of(context).focusColor,
+                        ),
+                      ),
                       ImageIcon(
                         const AssetImage("assets/pictures/gym.png"),
                         color: Theme.of(context).focusColor,
                         size: 25,
                       ),
                       Text(
-                        widget.hotelRoom.gym !=false ? "Provided" : "Not Provided",
-                        style: Theme.of(context).textTheme.bodySmall!
-                            .copyWith(color: Theme.of(context).focusColor),
+                        widget.hotelRoom.gym != false
+                            ? "Provided"
+                            : "N/P",
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: Theme.of(context).focusColor,
+                        ),
                       ),
                     ],
                   ),
