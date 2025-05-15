@@ -437,37 +437,50 @@ class _AuthScreenState extends State<AuthScreen> {
                                       horizontal: 40,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Colors.black,
+                                      color: Colors.transparent,
                                       borderRadius: BorderRadius.circular(30),
                                     ),
                                     child: GestureDetector(
                                       onTap: () async {
                                         final authService =
                                             AuthenticationProvider();
-                                        final userCredential =
-                                            await authService
-                                                .signInWithGoogle();
 
                                         // Show loading dialog before async operation
                                         showDialog(
                                           context: context,
                                           barrierDismissible: false,
                                           builder:
-                                              (
-                                                BuildContext context,
-                                              ) => const Center(
+                                              (BuildContext context) => Center(
                                                 child:
-                                                    CircularProgressIndicator(),
+                                                    CircularProgressIndicator(
+                                                      color:
+                                                          Theme.of(
+                                                            context,
+                                                          ).primaryColor,
+                                                    ),
                                               ),
                                         );
 
+                                        // Wait for a short delay to ensure the loader is visible
+                                        await Future.delayed(
+                                          Duration(milliseconds: 200),
+                                        );
+
+                                        // Now perform the sign-in
+                                        final userCredential =
+                                            await authService
+                                                .signInWithGoogle();
+
+                                        // Dismiss the loading dialog
+                                        Navigator.pop(context);
+
+                                        // Handle result
                                         if (userCredential != null) {
                                           Navigator.pushNamedAndRemoveUntil(
                                             context,
                                             HomeScreen.routeName,
                                             (route) => false,
                                           );
-
                                           debugPrint(
                                             'Signed in as: ${userCredential.user?.displayName}',
                                           );
@@ -485,14 +498,10 @@ class _AuthScreenState extends State<AuthScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Text(
-                                            "Sign In With Google",
-                                            style: Theme.of(
-                                              context,
-                                            ).textTheme.bodyMedium!.copyWith(
-                                              color:
-                                                  Theme.of(context).focusColor,
-                                            ),
+                                          Image.asset(
+                                            "assets/pictures/google logo.webp",
+                                            width: 40,
+                                            height: 40,
                                           ),
                                         ],
                                       ),

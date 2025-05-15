@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'event_model.dart';
 import 'hotel_room_model.dart';
 import 'resturant_model.dart';
 
 class HotelRooms extends ChangeNotifier {
-  // ------------------ ROOMS ------------------
+  // ------------------ ROOMS ------------------ //
   final _allRooms = <HotelRoom>[
     HotelRoom(
       id: "room_royal_suite",
@@ -15,6 +16,7 @@ class HotelRooms extends ChangeNotifier {
       numOfBeds: 2,
       gym: true,
       wifi: true,
+      extraPrice: 500,
     ),
     HotelRoom(
       id: "room_suite",
@@ -26,6 +28,7 @@ class HotelRooms extends ChangeNotifier {
       numOfBeds: 2,
       wifi: true,
       gym: true,
+      extraPrice: 150,
     ),
     HotelRoom(
       id: "room_king",
@@ -37,6 +40,7 @@ class HotelRooms extends ChangeNotifier {
       numOfBeds: 2,
       gym: true,
       wifi: true,
+      extraPrice: 100,
     ),
     HotelRoom(
       id: "room_double",
@@ -48,6 +52,7 @@ class HotelRooms extends ChangeNotifier {
       numOfBeds: 2,
       wifi: true,
       gym: false,
+      extraPrice: 0,
     ),
     HotelRoom(
       id: "room_single",
@@ -59,6 +64,7 @@ class HotelRooms extends ChangeNotifier {
       numOfBeds: 1,
       gym: false,
       wifi: false,
+      extraPrice: 0,
     ),
   ];
 
@@ -182,32 +188,113 @@ class HotelRooms extends ChangeNotifier {
   bool isFavouriteRestaurant(ResturantModel restaurant) =>
       _favouriteRestaurants.contains(restaurant);
 
+  // ------------------ Events ------------------ //
+  final List<EventModel> _allEvents = [
+    EventModel(
+      name: "Amr Diab",
+      imagePath: "assets/events/amr diab.jpg",
+      price1: 3000,
+      price2: 1500,
+    ),
+    EventModel(
+      name: "Hamaki",
+      imagePath: "assets/events/hamaki.jpg",
+      price1: 2500,
+      price2: 1500,
+    ),
+    EventModel(
+      name: "Tamer Hosny",
+      imagePath: "assets/events/tamer hosny.jpeg",
+      price1: 3000,
+      price2: 2500,
+    ),
+    EventModel(
+      name: "Travis Scott",
+      imagePath: "assets/events/travis clot.jpg",
+      price1: 5000,
+      price2: 3500,
+    ),
+    EventModel(
+      name: "Elissa",
+      imagePath: "assets/events/elisa.webp",
+      price1: 2500,
+      price2: 1500,
+    ),
+  ];
+
+  List<EventModel> _filteredEvents = [];
+
+  List<EventModel> get allEvents =>
+      _filteredEvents.isEmpty ? _allEvents : _filteredEvents;
+
+  final List<EventModel> _reservedEvents = [];
+
+  List<EventModel> get reservedEvents => List.unmodifiable(_reservedEvents);
+
+  void reserveEvent(EventModel event) {
+    if (!_reservedEvents.contains(event)) {
+      _reservedEvents.add(event);
+      notifyListeners();
+    }
+  }
+
+  void cancelEventReservation(EventModel event) {
+    if (_reservedEvents.remove(event)) {
+      notifyListeners();
+    }
+  }
+
+  bool isEventReserved(EventModel event) => _reservedEvents.contains(event);
+
+  /// ---------------- Favourite Events ----------------
+
+  final List<EventModel> _favouriteEvents = [];
+
+  List<EventModel> get favouriteEvents => List.unmodifiable(_favouriteEvents);
+
+  bool isFavouriteEvent(EventModel event) => _favouriteEvents.contains(event);
+
+  void addToFavouriteEvents(EventModel event) {
+    if (!_favouriteEvents.contains(event)) {
+      _favouriteEvents.add(event);
+      notifyListeners();
+    }
+  }
+
+  void removeFromFavouriteEvents(EventModel event) {
+    if (_favouriteEvents.remove(event)) {
+      notifyListeners();
+    }
+  }
+
   // ------------------ SEARCH ------------------ //
 
   void search(String query) {
     if (query.isEmpty) {
       _filteredRooms = [];
       _filteredRestaurants = [];
+      _filteredEvents = [];
     } else {
-      _filteredRooms =
-          _allRooms
-              .where(
-                (room) => room.name.toLowerCase().contains(query.toLowerCase()),
-              )
-              .toList();
+      final lowerQuery = query.toLowerCase();
 
-      _filteredRestaurants =
-          _allRestaurants
-              .where(
-                (rest) =>
-                    rest.name?.toLowerCase().contains(query.toLowerCase()) ??
-                    false,
-              )
-              .toList();
+      _filteredRooms = _allRooms
+          .where((room) => room.name.toLowerCase().contains(lowerQuery))
+          .toList();
+
+      _filteredRestaurants = _allRestaurants
+          .where((rest) =>
+      rest.name != null && rest.name!.toLowerCase().contains(lowerQuery))
+          .toList();
+
+      _filteredEvents = _allEvents.where((event) {
+        if (event.name == null) return false;
+        return event.name!.toLowerCase().contains(lowerQuery);
+      }).toList();
     }
 
     notifyListeners();
   }
+
 
   // ------------------ RESERVED ROOMS ------------------
   final List<HotelRoom> _reservedRooms = [];
@@ -251,4 +338,12 @@ class HotelRooms extends ChangeNotifier {
 
   bool isRestaurantReserved(ResturantModel restaurant) =>
       _reservedRestaurants.contains(restaurant);
+
+  // ------------------ OPTIONAL: Clear All Reservations ------------------
+  void clearReservations() {
+    _reservedRooms.clear();
+    _reservedRestaurants.clear();
+    _reservedEvents.clear();
+    notifyListeners();
+  }
 }

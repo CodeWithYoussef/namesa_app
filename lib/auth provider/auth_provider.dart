@@ -67,8 +67,11 @@ class AuthenticationProvider extends AuthService {
   ///logOut ✅
   @override
   Future<void> logOut() async {
+    final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    final GoogleSignIn googleSignIn = GoogleSignIn();
     try {
       await firebaseAuth.signOut();
+      await googleSignIn.signOut();
     } catch (e) {
       debugPrint("Error Logging Out: $e");
       throw Exception("Error Logging Out: $e");
@@ -122,11 +125,14 @@ class AuthenticationProvider extends AuthService {
 
   // % ------------------------------------------------------------------------- % //
 
-  ///google sign in
+  ///google sign in ✅
   @override
   Future<UserCredential?> signInWithGoogle() async {
     try {
-      // Trigger the authentication flow
+      // Force sign out first to ensure account picker is shown
+      await GoogleSignIn().signOut();
+
+      // Trigger the authentication flow and show the account picker
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
       // Abort if the user canceled the sign-in
@@ -142,10 +148,9 @@ class AuthenticationProvider extends AuthService {
         idToken: googleAuth.idToken,
       );
 
-      // Once signed in, return the UserCredential
+      // Sign in with the credential and return the result
       return await FirebaseAuth.instance.signInWithCredential(credential);
     } catch (e) {
-      // Handle errors (log, report, or show a message)
       print("Google sign-in error: $e");
       return null;
     }

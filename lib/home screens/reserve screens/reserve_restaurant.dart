@@ -275,18 +275,32 @@ class _ReserveRestaurantState extends State<ReserveRestaurant> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start, // In case wrapping occurs
         children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-              color: Theme.of(context).focusColor,
+          Expanded(
+            flex: 2,
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                color: Theme.of(context).focusColor,
+              ),
+              overflow: TextOverflow.ellipsis, // optional
+              maxLines: 2, // optional
             ),
           ),
           const SizedBox(width: 8),
-          Text(value, style: Theme.of(context).textTheme.bodyLarge),
+          Expanded(
+            flex: 3,
+            child: Text(
+              value,
+              style: Theme.of(context).textTheme.bodyLarge,
+              overflow: TextOverflow.ellipsis, // optional
+              maxLines: 2, // optional
+            ),
+          ),
         ],
       ),
     );
   }
+
 }

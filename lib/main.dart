@@ -36,7 +36,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => HotelRooms()), // ✅ Add this
+        ChangeNotifierProvider(create: (_) => HotelRooms()),
         // You can add more providers here if needed
       ],
       child: const MyApp(),

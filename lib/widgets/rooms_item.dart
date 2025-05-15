@@ -64,7 +64,7 @@ class _RoomsItemState extends State<RoomsItem> {
                           vertical: 20,
                           horizontal: 18,
                         ),
-                        width: 112,
+                        width: 120,
                         height: 32,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(30),
@@ -72,7 +72,7 @@ class _RoomsItemState extends State<RoomsItem> {
                         ),
                         child: Center(
                           child: Text(
-                            "LE ${widget.hotelRoom.price.toInt()}/Day",
+                            "USD ${widget.hotelRoom.price.toInt()}/Day",
                             style: Theme.of(context).textTheme.titleSmall!
                                 .copyWith(color: Colors.white),
                           ),

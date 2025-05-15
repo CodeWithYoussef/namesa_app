@@ -23,7 +23,7 @@ class ReservationItem extends StatelessWidget {
               onTap: onTap,
               child: Container(
                 width: 285,
-                height: 330,
+                height: 320,
                 decoration: BoxDecoration(
                   color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(16),
@@ -63,7 +63,7 @@ class ReservationItem extends StatelessWidget {
                           ),
                           child: Center(
                             child: Text(
-                              "LE ${reservedRoom.price.toInt()}/Day",
+                              "USD ${reservedRoom.price.toInt()}/Day",
                               style: Theme.of(context).textTheme.titleSmall!
                                   .copyWith(color: Colors.white),
                             ),
@@ -138,7 +138,7 @@ class ReservationItem extends StatelessWidget {
                       ),
                     ),
 
-                    const SizedBox(height: 16),
+                    // const SizedBox(height: 16),
 
                     /// Features Row (Beds, Wifi, Gym)
                     Row(

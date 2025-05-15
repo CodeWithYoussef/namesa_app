@@ -3,6 +3,7 @@ import 'package:namesa_yassin_preoject/models/hotel_rooms.dart';
 import 'package:namesa_yassin_preoject/models/resturant_model.dart';
 import 'package:namesa_yassin_preoject/widgets/favourite_restaurants_item.dart';
 import 'package:provider/provider.dart';
+import '../../widgets/favourite_event_item.dart';
 import '../../widgets/favourite_item.dart';
 
 class FavouritesTab extends StatelessWidget {
@@ -33,6 +34,7 @@ class FavouritesTab extends StatelessWidget {
             final favouriteRooms = value.favouriteRooms;
             final favouriteRestaurants =
                 value.favouriteRestaurants; // Add this in provider
+            final favouriteEvents = value.favouriteEvents;
 
             return SingleChildScrollView(
               child: Padding(
@@ -90,6 +92,37 @@ class FavouritesTab extends StatelessWidget {
                           itemBuilder: (context, index) {
                             return FavouriteRestaurantsteItem(
                               favouriteResturant: favouriteRestaurants[index],
+                            );
+                          },
+                        ),
+                    const SizedBox(height: 32),
+
+                    Divider(height: 2, thickness: 2, color: Colors.white),
+
+                    const SizedBox(height: 32),
+
+                    Text(
+                      "Favourite Events",
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: Theme.of(context).focusColor,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    favouriteEvents.isEmpty
+                        ? Text(
+                          'No favourite events yet',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        )
+                        : ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: favouriteEvents.length,
+                          itemBuilder: (context, index) {
+                            return FavouriteEventItem(
+                              favouriteEvent: favouriteEvents[index],
+                              onTap: () {
+                                // Optional: Navigate to event details or reservation screen
+                              },
                             );
                           },
                         ),

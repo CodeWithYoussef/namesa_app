@@ -42,7 +42,7 @@ class LightTheme extends BaseTheme {
       type: BottomNavigationBarType.fixed,
       showUnselectedLabels: true,
       showSelectedLabels: true,
-      selectedItemColor: primaryColor,
+      selectedItemColor: focusColor,
       unselectedItemColor: Colors.white,
     ),
 

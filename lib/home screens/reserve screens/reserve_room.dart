@@ -86,7 +86,7 @@ class _ReserveRoomState extends State<ReserveRoom> {
                         "assets/pictures/gym.png",
                         widget.hotelRoom.gym,
                       ),
-                      const SizedBox(height: 70),
+                      const SizedBox(height: 40),
                       GestureDetector(
                         onTap:
                             () => showPopUpDetails(context, widget.hotelRoom),
@@ -441,6 +441,7 @@ class _ReserveRoomState extends State<ReserveRoom> {
                                           hotelRoomProvider.reserveRoom(
                                             widget.hotelRoom,
                                           );
+                                          Navigator.pop(context);
                                           Navigator.pop(context);
                                           ScaffoldMessenger.of(
                                             context,

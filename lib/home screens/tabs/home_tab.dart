@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:namesa_yassin_preoject/auth%20provider/auth_provider.dart';
+import 'package:namesa_yassin_preoject/home%20screens/reserve%20screens/reserve_event.dart';
 import 'package:namesa_yassin_preoject/home%20screens/reserve%20screens/reserve_restaurant.dart';
+import 'package:namesa_yassin_preoject/models/event_model.dart';
 import 'package:namesa_yassin_preoject/models/hotel_room_model.dart';
 import 'package:namesa_yassin_preoject/models/hotel_rooms.dart';
 import 'package:namesa_yassin_preoject/models/resturant_model.dart';
+import 'package:namesa_yassin_preoject/widgets/event_item.dart';
 import 'package:provider/provider.dart';
 
 import '../../widgets/resturanant_item.dart';
@@ -33,7 +36,8 @@ class _HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-    final userName = user?.displayName ?? user?.email?.split('@').first.trim() ?? "Guest";
+    final userName =
+        user?.displayName ?? user?.email?.split('@').first.trim() ?? "Guest";
 
     return SafeArea(
       child: RefreshIndicator(
@@ -184,6 +188,59 @@ class _HomeTabState extends State<HomeTab> {
                                 physics: BouncingScrollPhysics(),
                               ),
                             ),
+
+                        SizedBox(height: 16),
+
+                        /// Restaurants title row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Events",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: 25),
+
+                        value.allEvents.isEmpty
+                            ? Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                "No events found",
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            )
+                            : SizedBox(
+                              height: 340,
+                              child: ListView.separated(
+                                itemBuilder: (context, index) {
+                                  EventModel eachEvent = value.allEvents[index];
+                                  return EventItem(
+                                    reservedEvent: eachEvent,
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => ReserveEvent(
+                                                event: value.allEvents[index],
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                separatorBuilder:
+                                    (context, index) => SizedBox(width: 16),
+                                scrollDirection: Axis.horizontal,
+                                itemCount: value.allEvents.length,
+                                physics: BouncingScrollPhysics(),
+                              ),
+                            ),
+
+                        SizedBox(height: 16),
                       ],
                     ),
                   ),
