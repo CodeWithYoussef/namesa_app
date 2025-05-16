@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import '../../widgets/resturanant_item.dart';
 import '../../widgets/rooms_item.dart';
 import '../../widgets/search_bar_widget.dart';
+import '../notification tab/notifications_screen.dart';
 import '../reserve screens/reserve_room.dart';
 
 class HomeTab extends StatefulWidget {
@@ -66,7 +67,18 @@ class _HomeTabState extends State<HomeTab> {
                                   .copyWith(color: Colors.white),
                             ),
                             const Spacer(),
-                            Icon(Icons.notifications_active_outlined, size: 30),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  NotificationsScreen.routeName,
+                                );
+                              },
+                              child: Icon(
+                                Icons.notifications_active_outlined,
+                                size: 30,
+                              ),
+                            ),
                           ],
                         ),
 

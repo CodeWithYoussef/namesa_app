@@ -37,6 +37,8 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
+    const String adminEmail = "kingyassen2152003@gmail.com";
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
@@ -313,6 +315,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                 guest = await auth.loginWithEmailAndPassword(
                                   emailControllingLogIn.text.trim(),
                                   passwordControllingLogIn.text.trim(),
+                                  context,
                                 );
                               }
                             } catch (e) {

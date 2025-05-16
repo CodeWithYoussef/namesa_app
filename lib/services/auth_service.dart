@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:namesa_yassin_preoject/models/guest_model.dart';
 
 ///auth services functions
 abstract class AuthService {
   ///login
-  Future<GuestModel?> loginWithEmailAndPassword(String email, String password);
+  Future<GuestModel?> loginWithEmailAndPassword(String email, String password,BuildContext context,);
 
   ///register
   Future<GuestModel?> registerWithEmailAndPassword(

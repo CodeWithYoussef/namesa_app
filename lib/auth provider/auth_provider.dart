@@ -4,6 +4,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:namesa_yassin_preoject/models/guest_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../admin screens/admin_screen.dart';
+import '../home screens/home_screen.dart';
 import '../models/reservation_model.dart';
 import '../services/auth_service.dart';
 
@@ -85,6 +87,7 @@ class AuthenticationProvider extends AuthService {
   Future<GuestModel?> loginWithEmailAndPassword(
     String email,
     String password,
+    BuildContext context,
   ) async {
     try {
       final userCredential = await firebaseAuth.signInWithEmailAndPassword(
@@ -94,10 +97,20 @@ class AuthenticationProvider extends AuthService {
 
       String uid = userCredential.user!.uid;
 
+      final doc =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      if (doc.exists && doc['role'] == 'admin') {
+        Navigator.pushReplacementNamed(context, AdminScreen.routeName);
+      } else {
+        Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+      }
+
+      // Update last login timestamp
       await FirebaseFirestore.instance.collection('users').doc(uid).update({
         'lastLogin': FieldValue.serverTimestamp(),
       });
 
+      // Fetch reservations
       final reservationSnapshot =
           await FirebaseFirestore.instance
               .collection('guests')
@@ -110,13 +123,21 @@ class AuthenticationProvider extends AuthService {
             return ReservationModel.fromJson(doc.data());
           }).toList();
 
-      return GuestModel(
+      final guest = GuestModel(
         id: uid,
         name: userCredential.user!.displayName ?? "Guest",
-        // Use displayName directly
         mail: email,
         reservations: reservations,
       );
+
+      // Check admin email and navigate accordingly
+      if (email.toLowerCase().trim() == "admin@example.com") {
+        Navigator.pushReplacementNamed(context, "Admin Screen");
+      } else {
+        Navigator.pushReplacementNamed(context, "HomeScreen");
+      }
+
+      return guest;
     } catch (e) {
       debugPrint('Login failed: $e');
       return null;

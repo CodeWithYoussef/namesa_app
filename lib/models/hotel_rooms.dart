@@ -277,24 +277,29 @@ class HotelRooms extends ChangeNotifier {
     } else {
       final lowerQuery = query.toLowerCase();
 
-      _filteredRooms = _allRooms
-          .where((room) => room.name.toLowerCase().contains(lowerQuery))
-          .toList();
+      _filteredRooms =
+          _allRooms
+              .where((room) => room.name.toLowerCase().contains(lowerQuery))
+              .toList();
 
-      _filteredRestaurants = _allRestaurants
-          .where((rest) =>
-      rest.name != null && rest.name!.toLowerCase().contains(lowerQuery))
-          .toList();
+      _filteredRestaurants =
+          _allRestaurants
+              .where(
+                (rest) =>
+                    rest.name != null &&
+                    rest.name!.toLowerCase().contains(lowerQuery),
+              )
+              .toList();
 
-      _filteredEvents = _allEvents.where((event) {
-        if (event.name == null) return false;
-        return event.name!.toLowerCase().contains(lowerQuery);
-      }).toList();
+      _filteredEvents =
+          _allEvents.where((event) {
+            if (event.name == null) return false;
+            return event.name!.toLowerCase().contains(lowerQuery);
+          }).toList();
     }
 
     notifyListeners();
   }
-
 
   // ------------------ RESERVED ROOMS ------------------
   final List<HotelRoom> _reservedRooms = [];
@@ -346,4 +351,6 @@ class HotelRooms extends ChangeNotifier {
     _reservedEvents.clear();
     notifyListeners();
   }
+  // ------------------ NOTIFICATIONS ------------------
+  final List<EventModel> notificationsApproved = [];
 }

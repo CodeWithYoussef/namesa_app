@@ -5,6 +5,8 @@ import 'package:namesa_yassin_preoject/auth%20screens/auth_screen.dart';
 import 'package:namesa_yassin_preoject/models/hotel_rooms.dart';
 import 'package:provider/provider.dart';
 
+import '../../admin screens/admin_screen.dart';
+
 class ProfileTab extends StatelessWidget {
   static const String routeName = "profile tab";
 
@@ -186,6 +188,12 @@ class ProfileTab extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, AdminScreen.routeName);
+                    },
+                    child: child,
                   ),
                 ],
               ),

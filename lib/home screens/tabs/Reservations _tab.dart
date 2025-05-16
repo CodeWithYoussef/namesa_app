@@ -128,7 +128,7 @@ class ReservationsTab extends StatelessWidget {
                   ],
                   const SizedBox(height: 32),
                   // -------- Reserved Events --------
-                  if (value.reservedRestaurants.isNotEmpty) ...[
+                  if (value.reservedEvents.isNotEmpty) ...[
                     Text(
                       "Reserved Events",
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
