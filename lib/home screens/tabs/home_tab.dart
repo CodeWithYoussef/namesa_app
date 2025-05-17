@@ -27,6 +27,10 @@ class HomeTab extends StatefulWidget {
 
 class _HomeTabState extends State<HomeTab> {
   final TextEditingController searchBarController = TextEditingController();
+  final ScrollController eventController = ScrollController();
+  final ScrollController restuarantController = ScrollController();
+  final ScrollController roomsController = ScrollController();
+  final ScrollController pageController = ScrollController();
 
   @override
   void dispose() {
@@ -48,6 +52,7 @@ class _HomeTabState extends State<HomeTab> {
           body: Consumer<HotelRooms>(
             builder:
                 (context, value, child) => SingleChildScrollView(
+                  controller: pageController,
                   physics: ClampingScrollPhysics(),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 22),
@@ -120,6 +125,7 @@ class _HomeTabState extends State<HomeTab> {
                             : SizedBox(
                               height: 340,
                               child: ListView.separated(
+                                controller: roomsController,
                                 itemBuilder: (context, index) {
                                   HotelRoom eachRoom = value.allRooms[index];
                                   return RoomsItem(
@@ -173,6 +179,7 @@ class _HomeTabState extends State<HomeTab> {
                             : SizedBox(
                               height: 340,
                               child: ListView.separated(
+                                controller: restuarantController,
                                 itemBuilder: (context, index) {
                                   ResturantModel eachResturant =
                                       value.allResturant[index];
@@ -227,6 +234,7 @@ class _HomeTabState extends State<HomeTab> {
                             : SizedBox(
                               height: 340,
                               child: ListView.separated(
+                                controller: eventController,
                                 itemBuilder: (context, index) {
                                   EventModel eachEvent = value.allEvents[index];
                                   return EventItem(
@@ -265,6 +273,27 @@ class _HomeTabState extends State<HomeTab> {
 
   Future<void> _refresh() async {
     await Future.delayed(const Duration(milliseconds: 800));
-    setState(() {});
+
+    // Scroll to top
+    eventController.animateTo(
+      0.0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+    restuarantController.animateTo(
+      0.0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+    roomsController.animateTo(
+      0.0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+    pageController.animateTo(
+      0.0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
   }
 }

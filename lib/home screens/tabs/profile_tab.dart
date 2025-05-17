@@ -195,12 +195,6 @@ class ProfileTab extends StatelessWidget {
                       ),
                     ],
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, AdminScreen.routeName);
-                    },
-                    child: child,
-                  ),
                 ],
               ),
             ),

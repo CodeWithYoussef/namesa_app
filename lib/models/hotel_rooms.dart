@@ -1,10 +1,14 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'event_model.dart';
 import 'hotel_room_model.dart';
 import 'resturant_model.dart';
 
 class HotelRooms extends ChangeNotifier {
-  // ------------------ ROOMS ------------------ //
+  // ------------------ Sample Data ------------------ //
   final _allRooms = <HotelRoom>[
     HotelRoom(
       id: "room_royal_suite",
@@ -68,32 +72,6 @@ class HotelRooms extends ChangeNotifier {
     ),
   ];
 
-  List<HotelRoom> _filteredRooms = [];
-
-  List<HotelRoom> get allRooms =>
-      _filteredRooms.isEmpty ? _allRooms : _filteredRooms;
-
-  final List<HotelRoom> _favouriteRooms = [];
-
-  List<HotelRoom> get favouriteRooms => List.unmodifiable(_favouriteRooms);
-
-  void addToFavouriteRooms(HotelRoom room) {
-    if (!_favouriteRooms.contains(room)) {
-      _favouriteRooms.add(room);
-      notifyListeners();
-    }
-  }
-
-  void removeFromFavouriteRooms(HotelRoom room) {
-    if (_favouriteRooms.remove(room)) {
-      notifyListeners();
-    }
-  }
-
-  bool isFavouriteRoom(HotelRoom room) => _favouriteRooms.contains(room);
-
-  // ------------------ RESTAURANTS ------------------
-
   final _allRestaurants = <ResturantModel>[
     ResturantModel(
       name: "Golden Palace",
@@ -147,48 +125,6 @@ class HotelRooms extends ChangeNotifier {
     ),
   ];
 
-  final List<String> _menu = [
-    "assets/menus/Rehab Horizon menu 1.jpg",
-    "assets/menus/Rehab Horizon menu 2.jpg",
-    "assets/menus/Rehab Horizon menu 3.jpg",
-    "assets/menus/imperial dragon 1.jpg",
-    "assets/menus/imperial dragon 2.jpg",
-    "assets/menus/imperial dragon 3.jpg",
-    "assets/menus/imperial dragon 4.jpg",
-    "assets/menus/flame royal 1.jpg",
-    "assets/menus/flame royal 2.jpg",
-    "assets/menus/flame royal 3.jpg",
-  ];
-
-  List<String> get menu => _menu; // Getter for _menu
-
-  List<ResturantModel> _filteredRestaurants = [];
-
-  List<ResturantModel> get allResturant =>
-      _filteredRestaurants.isEmpty ? _allRestaurants : _filteredRestaurants;
-
-  final List<ResturantModel> _favouriteRestaurants = [];
-
-  List<ResturantModel> get favouriteRestaurants =>
-      List.unmodifiable(_favouriteRestaurants);
-
-  void addToFavouriteRestaurants(ResturantModel restaurant) {
-    if (!_favouriteRestaurants.contains(restaurant)) {
-      _favouriteRestaurants.add(restaurant);
-      notifyListeners();
-    }
-  }
-
-  void removeFromFavouriteRestaurants(ResturantModel restaurant) {
-    if (_favouriteRestaurants.remove(restaurant)) {
-      notifyListeners();
-    }
-  }
-
-  bool isFavouriteRestaurant(ResturantModel restaurant) =>
-      _favouriteRestaurants.contains(restaurant);
-
-  // ------------------ Events ------------------ //
   final List<EventModel> _allEvents = [
     EventModel(
       name: "Amr Diab",
@@ -222,37 +158,162 @@ class HotelRooms extends ChangeNotifier {
     ),
   ];
 
+  final List<String> _menu = [
+    "assets/menus/Rehab Horizon menu 1.jpg",
+    "assets/menus/Rehab Horizon menu 2.jpg",
+    "assets/menus/Rehab Horizon menu 3.jpg",
+    "assets/menus/imperial dragon 1.jpg",
+    "assets/menus/imperial dragon 2.jpg",
+    "assets/menus/imperial dragon 3.jpg",
+    "assets/menus/imperial dragon 4.jpg",
+    "assets/menus/flame royal 1.jpg",
+    "assets/menus/flame royal 2.jpg",
+    "assets/menus/flame royal 3.jpg",
+  ];
+
+  List<HotelRoom> _filteredRooms = [];
+  List<ResturantModel> _filteredRestaurants = [];
   List<EventModel> _filteredEvents = [];
+
+  List<HotelRoom> get allRooms =>
+      _filteredRooms.isEmpty ? _allRooms : _filteredRooms;
+
+  List<ResturantModel> get allResturant =>
+      _filteredRestaurants.isEmpty ? _allRestaurants : _filteredRestaurants;
 
   List<EventModel> get allEvents =>
       _filteredEvents.isEmpty ? _allEvents : _filteredEvents;
 
+  // ------------------ Reservation Lists ------------------ //
+  final List<HotelRoom> _reservedRooms = [];
+  final List<ResturantModel> _reservedRestaurants = [];
   final List<EventModel> _reservedEvents = [];
+
+  List<HotelRoom> get reservedRooms => List.unmodifiable(_reservedRooms);
+
+  List<ResturantModel> get reservedRestaurants =>
+      List.unmodifiable(_reservedRestaurants);
 
   List<EventModel> get reservedEvents => List.unmodifiable(_reservedEvents);
 
-  void reserveEvent(EventModel event) {
+  // ------------------ Reservation Functions ------------------ //
+  void reserveRoom(HotelRoom room) async {
+    if (!_reservedRooms.contains(room)) {
+      _reservedRooms.add(room);
+      notifyListeners();
+
+      await saveToReservations('room', {
+        'roomId': room.id,
+        'name': room.name,
+        'price': room.price,
+        'imagePath': room.imagePath,
+      });
+    }
+  }
+
+  void reserveRestaurant(ResturantModel restaurant) async {
+    if (!_reservedRestaurants.contains(restaurant)) {
+      _reservedRestaurants.add(restaurant);
+      notifyListeners();
+
+      await saveToReservations('restaurant', {
+        'name': restaurant.name,
+        'description': restaurant.description,
+        'imagePath': restaurant.imagePath,
+      });
+    }
+  }
+
+  void reserveEvent(EventModel event) async {
     if (!_reservedEvents.contains(event)) {
       _reservedEvents.add(event);
       notifyListeners();
+
+      await saveToReservations('event', {
+        'name': event.name,
+        'imagePath': event.imagePath,
+        'price1': event.price1,
+        'price2': event.price2,
+      });
     }
   }
 
+  // ------------------ Cancel Reservation ------------------ //
+  void cancelRoomReservation(HotelRoom room) {
+    if (_reservedRooms.remove(room)) notifyListeners();
+  }
+
+  void cancelRestaurantReservation(ResturantModel restaurant) {
+    if (_reservedRestaurants.remove(restaurant)) notifyListeners();
+  }
+
   void cancelEventReservation(EventModel event) {
-    if (_reservedEvents.remove(event)) {
+    if (_reservedEvents.remove(event)) notifyListeners();
+  }
+
+  bool isRoomReserved(HotelRoom room) => _reservedRooms.contains(room);
+
+  bool isRestaurantReserved(ResturantModel restaurant) =>
+      _reservedRestaurants.contains(restaurant);
+
+  bool isEventReserved(EventModel event) => _reservedEvents.contains(event);
+
+  // ------------------ Save to Firestore ------------------ //
+  Future<void> saveToReservations(
+    String category,
+    Map<String, dynamic> data,
+  ) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    await FirebaseFirestore.instance.collection('reservations').add({
+      'userId': user.uid,
+      'category': category,
+      ...data,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+  }
+
+  // ------------------ Favorites ------------------ //
+  final List<HotelRoom> _favouriteRooms = [];
+
+  List<HotelRoom> get favouriteRooms => List.unmodifiable(_favouriteRooms);
+
+  void addToFavouriteRooms(HotelRoom room) {
+    if (!_favouriteRooms.contains(room)) {
+      _favouriteRooms.add(room);
       notifyListeners();
     }
   }
 
-  bool isEventReserved(EventModel event) => _reservedEvents.contains(event);
+  void removeFromFavouriteRooms(HotelRoom room) {
+    if (_favouriteRooms.remove(room)) notifyListeners();
+  }
 
-  /// ---------------- Favourite Events ----------------
+  bool isFavouriteRoom(HotelRoom room) => _favouriteRooms.contains(room);
+
+  final List<ResturantModel> _favouriteRestaurants = [];
+
+  List<ResturantModel> get favouriteRestaurants =>
+      List.unmodifiable(_favouriteRestaurants);
+
+  void addToFavouriteRestaurants(ResturantModel restaurant) {
+    if (!_favouriteRestaurants.contains(restaurant)) {
+      _favouriteRestaurants.add(restaurant);
+      notifyListeners();
+    }
+  }
+
+  void removeFromFavouriteRestaurants(ResturantModel restaurant) {
+    if (_favouriteRestaurants.remove(restaurant)) notifyListeners();
+  }
+
+  bool isFavouriteRestaurant(ResturantModel restaurant) =>
+      _favouriteRestaurants.contains(restaurant);
 
   final List<EventModel> _favouriteEvents = [];
 
   List<EventModel> get favouriteEvents => List.unmodifiable(_favouriteEvents);
-
-  bool isFavouriteEvent(EventModel event) => _favouriteEvents.contains(event);
 
   void addToFavouriteEvents(EventModel event) {
     if (!_favouriteEvents.contains(event)) {
@@ -262,95 +323,113 @@ class HotelRooms extends ChangeNotifier {
   }
 
   void removeFromFavouriteEvents(EventModel event) {
-    if (_favouriteEvents.remove(event)) {
-      notifyListeners();
-    }
+    if (_favouriteEvents.remove(event)) notifyListeners();
   }
 
-  // ------------------ SEARCH ------------------ //
+  bool isFavouriteEvent(EventModel event) => _favouriteEvents.contains(event);
 
+  // ------------------ Search ------------------ //
   void search(String query) {
     if (query.isEmpty) {
       _filteredRooms = [];
       _filteredRestaurants = [];
       _filteredEvents = [];
     } else {
-      final lowerQuery = query.toLowerCase();
-
+      final lower = query.toLowerCase();
       _filteredRooms =
-          _allRooms
-              .where((room) => room.name.toLowerCase().contains(lowerQuery))
-              .toList();
-
+          _allRooms.where((r) => r.name.toLowerCase().contains(lower)).toList();
       _filteredRestaurants =
           _allRestaurants
-              .where(
-                (rest) =>
-                    rest.name != null &&
-                    rest.name!.toLowerCase().contains(lowerQuery),
-              )
+              .where((r) => r.name?.toLowerCase().contains(lower) ?? false)
               .toList();
-
       _filteredEvents =
-          _allEvents.where((event) {
-            if (event.name == null) return false;
-            return event.name!.toLowerCase().contains(lowerQuery);
-          }).toList();
+          _allEvents
+              .where((e) => e.name?.toLowerCase().contains(lower) ?? false)
+              .toList();
+    }
+    notifyListeners();
+  }
+
+  // ------------------ Users Collection -------------------- //
+  Future<void> saveUserToFirestore() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);
+
+    final userData = {
+      'name': user.displayName ?? '',
+      'email': user.email ?? '',
+      'photoUrl': user.photoURL ?? '',
+      'createdAt': FieldValue.serverTimestamp(),
+    };
+
+    // Use set with merge:true so you don't overwrite existing data unintentionally
+    await userDoc.set(userData, SetOptions(merge: true));
+  }
+
+  // ------------------ Load User Data ------------------------ //
+
+  Future<void> loadReservationsForUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final uid = user.uid;
+
+    // Clear local reservations first
+    _reservedRooms.clear();
+    _reservedRestaurants.clear();
+    _reservedEvents.clear();
+
+    // Get all reservations of this user
+    final snapshot =
+        await FirebaseFirestore.instance
+            .collection('reservations')
+            .where('userId', isEqualTo: uid)
+            .get();
+
+    for (final doc in snapshot.docs) {
+      final data = doc.data();
+      final category = data['category'] as String?;
+
+      if (category == 'room') {
+        final roomId = data['roomId'] as String?;
+        if (roomId != null) {
+          final room = _allRooms.firstWhereOrNull((r) => r.id == roomId);
+          if (room != null && !_reservedRooms.contains(room)) {
+            _reservedRooms.add(room);
+          }
+        }
+      } else if (category == 'restaurant') {
+        final name = data['name'] as String?;
+        if (name != null) {
+          final restaurant = _allRestaurants.firstWhereOrNull(
+            (r) => r.name == name,
+          );
+          if (restaurant != null &&
+              !_reservedRestaurants.contains(restaurant)) {
+            _reservedRestaurants.add(restaurant);
+          }
+        }
+      } else if (category == 'event') {
+        final name = data['name'] as String?;
+        if (name != null) {
+          final event = _allEvents.firstWhereOrNull((e) => e.name == name);
+          if (event != null && !_reservedEvents.contains(event)) {
+            _reservedEvents.add(event);
+          }
+        }
+      }
     }
 
     notifyListeners();
   }
 
-  // ------------------ RESERVED ROOMS ------------------
-  final List<HotelRoom> _reservedRooms = [];
-
-  List<HotelRoom> get reservedRooms => List.unmodifiable(_reservedRooms);
-
-  void reserveRoom(HotelRoom room) {
-    if (!_reservedRooms.contains(room)) {
-      _reservedRooms.add(room);
-      notifyListeners();
-    }
-  }
-
-  void cancelRoomReservation(HotelRoom room) {
-    if (_reservedRooms.remove(room)) {
-      notifyListeners();
-    }
-  }
-
-  bool isRoomReserved(HotelRoom room) => _reservedRooms.contains(room);
-
-  // ------------------ RESERVED RESTAURANTS ------------------
-  final List<ResturantModel> _reservedRestaurants = [];
-
-  List<ResturantModel> get reservedRestaurants =>
-      List.unmodifiable(_reservedRestaurants);
-
-  void reserveRestaurant(ResturantModel restaurant) {
-    if (!_reservedRestaurants.contains(restaurant)) {
-      _reservedRestaurants.add(restaurant);
-      debugPrint("$reservedRestaurants");
-      notifyListeners();
-    }
-  }
-
-  void cancelRestaurantReservation(ResturantModel restaurant) {
-    if (_reservedRestaurants.remove(restaurant)) {
-      notifyListeners();
-    }
-  }
-
-  bool isRestaurantReserved(ResturantModel restaurant) =>
-      _reservedRestaurants.contains(restaurant);
-
-  // ------------------ OPTIONAL: Clear All Reservations ------------------
+  // ------------------ Clear All Reservations ------------------ //
   void clearReservations() {
     _reservedRooms.clear();
     _reservedRestaurants.clear();
     _reservedEvents.clear();
     notifyListeners();
   }
-  // ------------------ NOTIFICATIONS ------------------
-  final List<EventModel> notificationsApproved = [];
 }

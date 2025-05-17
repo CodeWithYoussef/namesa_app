@@ -202,30 +202,6 @@ class _ReserveRestaurantState extends State<ReserveRestaurant> {
                       ),
                     ),
                     SizedBox(height: 32),
-                    SizedBox(
-                      height: 400,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: value.menu.length,
-                        // Use menu length to limit items
-                        itemBuilder: (context, index) {
-                          // Access the menu list directly from your provider or class
-                          List<String> menuImages = value.menu;
-                          return Container(
-                            width: 250,
-                            height: 300,
-                            margin: EdgeInsets.symmetric(horizontal: 10),
-                            // Optional: for spacing
-                            child: Image.asset(
-                              menuImages[index],
-                              // Correctly reference the menu images
-                              fit: BoxFit.fill,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    SizedBox(height: 32),
                     GestureDetector(
                       onTap: () {
                         if (enteredChairs != null && enteredChairs! > 0) {

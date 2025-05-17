@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:namesa_yassin_preoject/models/hotel_rooms.dart';
+import 'package:provider/provider.dart';
 
 import '../models/guest_model.dart';
 import '../models/reservation_model.dart';
@@ -117,31 +119,33 @@ class AuthenticationProvider extends AuthService {
   // Google Sign-In returning GuestModel (not UserCredential)
   @override
   @override
-  Future<UserCredential?> signInWithGoogle() async {
+  Future<UserCredential?> signInWithGoogle(BuildContext context) async {
     try {
       await GoogleSignIn().signOut();
 
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) return null;
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      final userCredential = await firebaseAuth.signInWithCredential(
-        credential,
-      );
+      final userCredential = await firebaseAuth.signInWithCredential(credential);
 
-      return userCredential; // Return UserCredential here
+      // After successful sign-in, load the user reservations:
+      final loadData = Provider.of<HotelRooms>(context,listen: false);
+      await loadData.loadReservationsForUser();
+
+      return userCredential;
     } catch (e) {
       debugPrint("Google sign-in error: $e");
       return null;
     }
   }
+
 
   // Register new user with email/password, send verification, return GuestModel
   @override

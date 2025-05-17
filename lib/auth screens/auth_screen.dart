@@ -2,10 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:namesa_yassin_preoject/home%20screens/home_screen.dart';
 import 'package:namesa_yassin_preoject/models/guest_model.dart';
+import 'package:provider/provider.dart';
 
 import '../admin screens/admin_screen.dart';
 import '../auth provider/auth_provider.dart';
 import '../home screens/tabs/home_tab.dart';
+import '../models/hotel_rooms.dart';
 import '../services/auth_service.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -335,6 +337,12 @@ class _AuthScreenState extends State<AuthScreen> {
                                   (route) => false,
                                 );
                               } else {
+                                final hotelRooms = Provider.of<HotelRooms>(
+                                  context,
+                                  listen: false,
+                                );
+                                await hotelRooms.loadReservationsForUser();
+
                                 Navigator.pushNamedAndRemoveUntil(
                                   context,
                                   HomeScreen.routeName,
@@ -474,9 +482,8 @@ class _AuthScreenState extends State<AuthScreen> {
                                         );
 
                                         // Now perform the sign-in
-                                        final userCredential =
-                                            await authService
-                                                .signInWithGoogle();
+                                        final userCredential = await authService
+                                            .signInWithGoogle(context);
 
                                         // Dismiss the loading dialog
                                         Navigator.pop(context);
