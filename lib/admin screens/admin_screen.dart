@@ -3,6 +3,8 @@ import 'package:namesa_yassin_preoject/admin%20screens/admin_reserved_rooms.dart
 import 'package:namesa_yassin_preoject/models/hotel_rooms.dart';
 import 'package:provider/provider.dart';
 
+import '../auth provider/auth_provider.dart';
+import '../auth screens/auth_screen.dart';
 import 'admin_reserved_events.dart';
 import 'admin_reserved_restaurants.dart';
 
@@ -21,6 +23,7 @@ class AdminScreen extends StatelessWidget {
           "Admin Dashboard",
           style: Theme.of(context).textTheme.bodyLarge,
         ),
+        iconTheme: IconThemeData(color: Colors.white),
         elevation: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
@@ -161,12 +164,93 @@ class AdminScreen extends StatelessWidget {
                       ),
                     ],
                   ),
+                  SizedBox(height: 32),
+                  buttonMaker(
+                    context,
+                    () async {
+                      ///Circular Progress Indicator
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder:
+                            (context) => Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            ),
+                      );
+
+                      ///log out
+                      try {
+                        final authProvider =
+                            Provider.of<AuthenticationProvider>(
+                              context,
+                              listen: false,
+                            );
+                        await authProvider.logOut();
+                      } catch (e) {
+                        debugPrint("Logout failed: $e");
+                      }
+
+                      /// Wait for 2 seconds before navigating
+                      await Future.delayed(const Duration(seconds: 3));
+
+                      Navigator.pop(context); // Close the loading dialog
+                      Navigator.pushReplacementNamed(
+                        context,
+                        AuthScreen.routeName,
+                      );
+                    },
+
+                    "Log Out",
+                    60,
+                    200,
+                    Colors.transparent,
+                    Theme.of(context).focusColor,
+                    Theme.of(context).focusColor,
+                  ),
                   Expanded(
                     child: Image.asset("assets/pictures/namesa bg final.png"),
                   ),
                 ],
               ),
             ),
+      ),
+    );
+  }
+
+  Widget buttonMaker(
+    BuildContext context,
+    void Function() onTap,
+    String text,
+    double height,
+    double width,
+    Color backGroundColor,
+    Color borderColor,
+    Color textColor,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          height: height,
+          width: width,
+          decoration: BoxDecoration(
+            color: backGroundColor,
+            borderRadius: BorderRadius.circular(30),
+            border: Border.all(color: borderColor, width: 2),
+          ),
+          child: Center(
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: textColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

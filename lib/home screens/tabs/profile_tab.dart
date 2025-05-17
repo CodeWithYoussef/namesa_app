@@ -142,6 +142,9 @@ class ProfileTab extends StatelessWidget {
                           "About Namesa",
                           60,
                           200,
+                          Theme.of(context).focusColor,
+                          Colors.transparent,
+                          Colors.white,
                         ),
                       ),
                       Expanded(
@@ -185,6 +188,9 @@ class ProfileTab extends StatelessWidget {
                           "Log Out",
                           60,
                           200,
+                          Colors.transparent,
+                          Theme.of(context).focusColor,
+                          Theme.of(context).focusColor,
                         ),
                       ),
                     ],
@@ -208,6 +214,9 @@ class ProfileTab extends StatelessWidget {
     String text,
     double height,
     double width,
+    Color backGroundColor,
+    Color borderColor,
+    Color textColor,
   ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -217,14 +226,15 @@ class ProfileTab extends StatelessWidget {
           height: height,
           width: width,
           decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
+            color: backGroundColor,
             borderRadius: BorderRadius.circular(30),
+            border: Border.all(color: borderColor, width: 2),
           ),
           child: Center(
             child: Text(
               text,
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: Theme.of(context).focusColor,
+                color: textColor,
                 fontWeight: FontWeight.bold,
               ),
             ),

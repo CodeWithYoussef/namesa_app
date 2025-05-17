@@ -222,12 +222,17 @@ class _ReserveRoomState extends State<ReserveRoom> {
                               label: "Check-Out Date",
                               date: selectedCheckOutDate,
                               onTap: () async {
+                                final DateTime checkIn =
+                                    selectedCheckInDate ?? DateTime.now();
                                 final DateTime? picked = await showDatePicker(
                                   context: context,
-                                  initialDate:
-                                      selectedCheckInDate ?? DateTime.now(),
-                                  firstDate:
-                                      selectedCheckInDate ?? DateTime.now(),
+                                  initialDate: checkIn.add(
+                                    const Duration(days: 1),
+                                  ),
+                                  firstDate: checkIn.add(
+                                    const Duration(days: 1),
+                                  ),
+                                  // 👈 Enforces different date
                                   lastDate: DateTime.now().add(
                                     const Duration(days: 365),
                                   ),
@@ -238,6 +243,7 @@ class _ReserveRoomState extends State<ReserveRoom> {
                                 }
                               },
                             ),
+
                             const SizedBox(height: 16),
                             Row(
                               children: [

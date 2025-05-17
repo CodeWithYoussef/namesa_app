@@ -61,29 +61,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 height: 400,
               ),
             ),
-            const SizedBox(height: 20),
-
-            // Animated text
-            AnimatedTextKit(
-              animatedTexts: [
-                TyperAnimatedText(
-                  'Welcome to Namesa!',
-                  textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Theme.of(context).focusColor,
-                  ),
-                  speed: const Duration(milliseconds: 100),
-                ),
-                TyperAnimatedText(
-                  'Your Journey With Royalty Begins...',
-                  textStyle: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Theme.of(context).focusColor,
-                  ),
-                  speed: const Duration(milliseconds: 100),
-                ),
-              ],
-              totalRepeatCount: 1, // Animation repeats once
-              pause: const Duration(seconds: 1), // Pause between animations
-            ),
           ],
         ),
       ),

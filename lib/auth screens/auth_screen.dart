@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:namesa_yassin_preoject/home%20screens/home_screen.dart';
 import 'package:namesa_yassin_preoject/models/guest_model.dart';
 
+import '../admin screens/admin_screen.dart';
 import '../auth provider/auth_provider.dart';
 import '../home screens/tabs/home_tab.dart';
 import '../services/auth_service.dart';
@@ -37,7 +38,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const String adminEmail = "kingyassen2152003@gmail.com";
+    const String adminEmail = "main.namesa@gmail.com";
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -291,7 +292,6 @@ class _AuthScreenState extends State<AuthScreen> {
                       ElevatedButton(
                         onPressed: () async {
                           if (formKey.currentState!.validate()) {
-                            // Show loading dialog before async operation
                             showDialog(
                               context: context,
                               barrierDismissible: false,
@@ -321,23 +321,27 @@ class _AuthScreenState extends State<AuthScreen> {
                             } catch (e) {
                               debugPrint('Error: $e');
                             } finally {
-                              // Close the loading dialog only if the widget is still mounted
                               if (mounted) {
-                                Navigator.pop(
-                                  context,
-                                ); // Close the loading dialog
+                                Navigator.pop(context);
                               }
                             }
 
                             if (guest != null) {
-                              // Successful login/signup, navigate to the home screen
-                              Navigator.pushNamedAndRemoveUntil(
-                                context,
-                                HomeScreen.routeName,
-                                (route) => false,
-                              );
+                              if (guest.mail?.toLowerCase() ==
+                                  adminEmail.toLowerCase()) {
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  AdminScreen.routeName,
+                                  (route) => false,
+                                );
+                              } else {
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  HomeScreen.routeName,
+                                  (route) => false,
+                                );
+                              }
                             } else {
-                              // Show an error dialog if registration/login fails
                               showDialog(
                                 context: context,
                                 builder:
@@ -359,7 +363,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                         ),
                                       ),
                                       content: Text(
-                                        'Login/Registration failed. Please check your credentials or verify your email.',
+                                        "Please check your inbox to verify your email and login\n\nIf you didn't receive the verification mail, please check your credentials and try signing up again",
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall!

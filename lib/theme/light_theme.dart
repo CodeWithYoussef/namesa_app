@@ -36,6 +36,9 @@ class LightTheme extends BaseTheme {
     ///cardColor
     cardColor: cardColor,
 
+    ///splashFactory
+    splashFactory: NoSplash.splashFactory,
+
     ///bottom navigationBar
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: backgroundColor,
