@@ -3,7 +3,6 @@ import 'package:namesa_yassin_preoject/models/event_model.dart';
 import 'package:namesa_yassin_preoject/models/hotel_rooms.dart';
 import 'package:provider/provider.dart';
 
-import '../models/resturant_model.dart';
 
 class ReservedEventItem extends StatelessWidget {
   final EventModel reservedEventItem;

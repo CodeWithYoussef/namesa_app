@@ -270,8 +270,10 @@ class HotelRooms extends ChangeNotifier {
       'userId': user.uid,
       'category': category,
       ...data,
+      'status': 'pending', // 👈 Add this line
       'timestamp': FieldValue.serverTimestamp(),
     });
+
   }
 
   // ------------------ Favorites ------------------ //

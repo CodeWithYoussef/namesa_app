@@ -1,12 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:namesa_yassin_preoject/home%20screens/home_screen.dart';
 import 'package:namesa_yassin_preoject/models/guest_model.dart';
 import 'package:provider/provider.dart';
 
-import '../admin screens/admin_screen.dart';
+import '../admin/admin screens/admin_screen.dart';
 import '../auth provider/auth_provider.dart';
-import '../home screens/tabs/home_tab.dart';
 import '../models/hotel_rooms.dart';
 import '../services/auth_service.dart';
 

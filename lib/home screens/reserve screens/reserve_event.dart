@@ -156,20 +156,28 @@ class _ReserveEventState extends State<ReserveEvent> {
                   Center(
                     child: GestureDetector(
                       onTap: () {
-                        if (ticketCount != null && ticketCount! > 0) {
-                          value.reserveEvent(
-                            widget.event,
-                          ); // Update this method
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Event Reserved Successfully ✅'),
-                            ),
-                          );
-                          Navigator.pop(context);
+                        if (value.reservedRooms.isNotEmpty) {
+                          if (ticketCount != null && ticketCount! > 0) {
+                            value.reserveEvent(widget.event);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Event Reserved Successfully ✅'),
+                              ),
+                            );
+                            Navigator.pop(context);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Please enter number of tickets'),
+                              ),
+                            );
+                          }
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Please enter number of tickets'),
+                              content: Text(
+                                'Please reserve a room before reserving an event',
+                              ),
                             ),
                           );
                         }

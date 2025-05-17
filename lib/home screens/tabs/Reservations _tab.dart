@@ -182,7 +182,20 @@ class ReservationsTab extends StatelessWidget {
                   Divider(height: 2, color: Colors.white, thickness: 3),
                   SizedBox(height: 8),
                   Text(
-                    "1. How Do I Cancel a Reservation?🧐",
+                    "1. How To Request Service?🧐",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    "- By Clicking On The Current Reserved Room Below.💡",
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      fontWeight: FontWeight.w100,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Divider(),
+                  Text(
+                    "2. How Do I Cancel a Reservation?🧐",
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   SizedBox(height: 8),
@@ -196,7 +209,7 @@ class ReservationsTab extends StatelessWidget {
                   Divider(),
                   SizedBox(height: 8),
                   Text(
-                    "2. How Much Time Do I Have Before Canceling My Reservation?🧐",
+                    "3. How Much Time Do I Have Before Canceling My Reservation?🧐",
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   SizedBox(height: 8),
@@ -209,7 +222,7 @@ class ReservationsTab extends StatelessWidget {
                   Divider(),
                   SizedBox(height: 8),
                   Text(
-                    "3. Why Is My Reservation Is Pending?🧐",
+                    "4. Why Is My Reservation Is Pending?🧐",
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   SizedBox(height: 8),
@@ -311,7 +324,7 @@ class ReservationsTab extends StatelessWidget {
 
                     // Dynamic Total Price display
                     Text(
-                      "Total Price: USD ${totalPrice.toStringAsFixed(2)}",
+                      "Total Price: USD ${totalPrice.toInt().toStringAsFixed(2)}",
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: Theme.of(context).focusColor,
                       ),

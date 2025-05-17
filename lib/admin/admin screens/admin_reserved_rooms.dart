@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:namesa_yassin_preoject/widgets/reserved_resturant_item.dart';
+import 'package:namesa_yassin_preoject/models/hotel_room_model.dart';
+import 'package:namesa_yassin_preoject/widgets/reservation_item.dart';
 import 'package:provider/provider.dart';
 
-import '../models/hotel_rooms.dart';
+import '../../models/hotel_rooms.dart';
 
-class AdminReservedRestaurants extends StatelessWidget {
-  static const String routeName = "Admin Reserved Restaurants";
+class AdminReservedRooms extends StatelessWidget {
+  static const String routeName = "Admin Reserved Rooms";
 
-  const AdminReservedRestaurants({super.key});
+  const AdminReservedRooms({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final restaurants = Provider.of<HotelRooms>(context).reservedRestaurants;
+    final rooms = Provider.of<HotelRooms>(context).reservedRooms;
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         centerTitle: true,
         title: Text(
-          "Reserved Restaurants",
+          "Reserved Rooms",
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         iconTheme: IconThemeData(color: Colors.white),
@@ -30,20 +31,21 @@ class AdminReservedRestaurants extends StatelessWidget {
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body:
-          restaurants.isEmpty
+          rooms.isEmpty
               ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.restaurant,
-                      size: 64,
-                      color: Colors.grey.shade600,
-                    ),
+                    Icon(Icons.hotel, size: 64, color: Colors.grey.shade600),
                     const SizedBox(height: 16),
-                    Text(
-                      "No Restaurants Are Reserved Now",
-                      style: Theme.of(context).textTheme.bodyLarge,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 22.0),
+                      child: Text(
+                        "No Rooms Are Reserved Now",
+                        softWrap: true,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
                     ),
                   ],
                 ),
@@ -55,11 +57,13 @@ class AdminReservedRestaurants extends StatelessWidget {
                 ),
                 scrollDirection: Axis.vertical,
                 physics: const BouncingScrollPhysics(),
-                itemCount: restaurants.length,
+                itemCount: rooms.length,
                 itemBuilder: (context, index) {
-                  return ReservedRestaurantItem(
-                    reservedRestaurant: restaurants[index],
-                    onTap: () {},
+                  return ReservationItem(
+                    reservedRoom: rooms[index],
+                    onTap: () {
+                      // Handle tap if needed
+                    },
                   );
                 },
               ),

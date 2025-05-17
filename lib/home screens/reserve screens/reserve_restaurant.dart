@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:namesa_yassin_preoject/models/resturant_model.dart';
 import 'package:provider/provider.dart';
 import '../../models/hotel_rooms.dart';
-import '../../widgets/resturanant_item.dart';
 
 class ReserveRestaurant extends StatefulWidget {
   final ResturantModel resturantModel;
@@ -37,8 +36,7 @@ class _ReserveRestaurantState extends State<ReserveRestaurant> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 hintText: 'Enter a number',
-                hintStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                ),
+                hintStyle: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
             actions: [
@@ -62,7 +60,9 @@ class _ReserveRestaurantState extends State<ReserveRestaurant> {
                       Navigator.of(context).pop();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Please enter a number from 1 to 16')),
+                        const SnackBar(
+                          content: Text('Please enter a number from 1 to 16'),
+                        ),
                       );
                     }
                   }
@@ -87,12 +87,36 @@ class _ReserveRestaurantState extends State<ReserveRestaurant> {
     super.dispose();
   }
 
+  Widget buildInfoRow(BuildContext context, String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+              color: Theme.of(context).focusColor,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              value,
+              style: Theme.of(context).textTheme.bodyMedium,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         centerTitle: true,
         title: Text(
           "${widget.resturantModel.name}",
@@ -101,7 +125,7 @@ class _ReserveRestaurantState extends State<ReserveRestaurant> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       ),
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Consumer<HotelRooms>(
           builder:
               (context, value, child) => Padding(
@@ -178,13 +202,14 @@ class _ReserveRestaurantState extends State<ReserveRestaurant> {
 
                     const SizedBox(height: 32),
 
-                    Divider(
+                    const Divider(
                       height: 20,
                       endIndent: 40,
                       indent: 40,
                       thickness: 3,
                     ),
-                    SizedBox(height: 32),
+                    const SizedBox(height: 32),
+
                     Container(
                       width: 290,
                       height: 70,
@@ -201,24 +226,38 @@ class _ReserveRestaurantState extends State<ReserveRestaurant> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 32),
+                    const SizedBox(height: 32),
+
                     GestureDetector(
                       onTap: () {
-                        if (enteredChairs != null && enteredChairs! > 0) {
-                          value.reserveRestaurant(widget.resturantModel);
+                        if (value.reservedRooms.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Restaurant Reserved ✅')),
-                          );
-                          Navigator.pop(context);
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                            const SnackBar(
                               content: Text(
-                                'Please enter number of chairs first',
+                                'Please reserve a room before reserving a restaurant',
                               ),
                             ),
                           );
+                          return;
                         }
+                        if (enteredChairs == null || enteredChairs! <= 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Please enter the number of chairs',
+                              ),
+                            ),
+                          );
+                          return;
+                        }
+                        // Proceed to reserve restaurant
+                        value.reserveRestaurant(widget.resturantModel);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Restaurant Reserved Successfully ✅'),
+                          ),
+                        );
+                        Navigator.pop(context);
                       },
                       child: Container(
                         width: 230,
@@ -237,7 +276,7 @@ class _ReserveRestaurantState extends State<ReserveRestaurant> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 128),
+                    const SizedBox(height: 128),
                   ],
                 ),
               ),
@@ -245,38 +284,37 @@ class _ReserveRestaurantState extends State<ReserveRestaurant> {
       ),
     );
   }
+}
 
-  // Reusable widget to build info rows
-  Widget buildInfoRow(BuildContext context, String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start, // In case wrapping occurs
-        children: [
-          Expanded(
-            flex: 2,
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                color: Theme.of(context).focusColor,
-              ),
-              overflow: TextOverflow.ellipsis, // optional
-              maxLines: 2, // optional
+// Reusable widget to build info rows
+Widget buildInfoRow(BuildContext context, String title, String value) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start, // In case wrapping occurs
+      children: [
+        Expanded(
+          flex: 2,
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+              color: Theme.of(context).focusColor,
             ),
+            overflow: TextOverflow.ellipsis, // optional
+            maxLines: 2, // optional
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            flex: 3,
-            child: Text(
-              value,
-              style: Theme.of(context).textTheme.bodyLarge,
-              overflow: TextOverflow.ellipsis, // optional
-              maxLines: 2, // optional
-            ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          flex: 3,
+          child: Text(
+            value,
+            style: Theme.of(context).textTheme.bodyLarge,
+            overflow: TextOverflow.ellipsis, // optional
+            maxLines: 2, // optional
           ),
-        ],
-      ),
-    );
-  }
-
+        ),
+      ],
+    ),
+  );
 }

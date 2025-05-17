@@ -7,10 +7,10 @@ import 'package:namesa_yassin_preoject/theme/base_theme.dart';
 import 'package:namesa_yassin_preoject/theme/light_theme.dart';
 import 'package:provider/provider.dart';
 
-import 'admin screens/admin_reserved_events.dart';
-import 'admin screens/admin_reserved_restaurants.dart';
-import 'admin screens/admin_reserved_rooms.dart';
-import 'admin screens/admin_screen.dart';
+import 'admin/admin screens/admin_reserved_events.dart';
+import 'admin/admin screens/admin_reserved_restaurants.dart';
+import 'admin/admin screens/admin_reserved_rooms.dart';
+import 'admin/admin screens/admin_screen.dart';
 import 'auth screens/auth_screen.dart';
 import 'firebase_options.dart';
 import 'home screens/home_screen.dart';
@@ -60,7 +60,8 @@ class MyApp extends StatelessWidget {
       theme: lightTheme.themeData,
       routes: {
         AdminScreen.routeName: (context) => const AdminScreen(),
-        AdminReservedRestaurants.routeName: (context) => const AdminReservedRestaurants(),
+        AdminReservedRestaurants.routeName:
+            (context) => const AdminReservedRestaurants(),
         AdminReservedEvents.routeName: (context) => const AdminReservedEvents(),
         AdminReservedRooms.routeName: (context) => const AdminReservedRooms(),
         SplashScreen.routeName: (context) => const SplashScreen(),
