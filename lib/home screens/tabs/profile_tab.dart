@@ -5,7 +5,6 @@ import 'package:namesa_yassin_preoject/auth%20screens/auth_screen.dart';
 import 'package:namesa_yassin_preoject/models/hotel_rooms.dart';
 import 'package:provider/provider.dart';
 
-
 class ProfileTab extends StatelessWidget {
   static const String routeName = "profile tab";
 
@@ -36,19 +35,19 @@ class ProfileTab extends StatelessWidget {
                   const SizedBox(height: 32),
                   Container(
                     width: double.infinity,
-                    height: 320,
+                    height: 400,
                     decoration: BoxDecoration(
                       color: Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: Stack(
                       children: [
-                        // User Name
+                        // Name
                         Positioned(
                           top: 32,
                           left: 16,
                           child: Container(
-                            width: 250,
+                            width: 350,
                             height: 50,
                             decoration: BoxDecoration(
                               color: Colors.black,
@@ -64,9 +63,30 @@ class ProfileTab extends StatelessWidget {
                           ),
                         ),
 
-                        // Reserved Rooms Count
+                        // Email
                         Positioned(
-                          top: 100,
+                          top: 32 + 70, // 102
+                          left: 16,
+                          child: Container(
+                            width: 350,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Center(
+                              child: Text(
+                                user?.email ?? '',
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        // Rooms Reserved
+                        Positioned(
+                          top: 32 + 70 * 2, // 172
                           left: 16,
                           right: 16,
                           child: Container(
@@ -85,9 +105,9 @@ class ProfileTab extends StatelessWidget {
                           ),
                         ),
 
-                        // Reserved Restaurants Count
+                        // Restaurants Reserved
                         Positioned(
-                          top: 170,
+                          top: 32 + 70 * 3, // 242
                           left: 16,
                           right: 16,
                           child: Container(
@@ -106,9 +126,9 @@ class ProfileTab extends StatelessWidget {
                           ),
                         ),
 
-                        // Reserved Events Count
+                        // Events Reserved
                         Positioned(
-                          top: 240,
+                          top: 32 + 70 * 4, // 312
                           left: 16,
                           right: 16,
                           child: Container(

@@ -249,19 +249,29 @@ class _AuthScreenState extends State<AuthScreen> {
                           child: TextFormField(
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return "Password Is Required";
+                                return "Password is required";
                               }
                               if (value != passwordControllingSighUp.text) {
-                                return "Password Doesn't Match";
+                                return "Passwords don't match";
                               }
                               if (value.length < 6) {
-                                return "Password Should Be More Than 6 Characters";
+                                return "Password must be at least 6 characters";
+                              }
+                              if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                                return "Include at least one uppercase letter";
+                              }
+                              if (!RegExp(r'[a-z]').hasMatch(value)) {
+                                return "Include at least one lowercase letter";
+                              }
+                              if (!RegExp(r'[0-9]').hasMatch(value)) {
+                                return "Include at least one digit";
+                              }
+                              if (!RegExp(r'[!@#\$%^&*(),.?":{}|<>]').hasMatch(value)) {
+                                return "Include at least one special character";
                               }
                               return null;
                             },
-                            onTapOutside:
-                                (event) => FocusScope.of(context).unfocus(),
-
+                            onTapOutside: (event) => FocusScope.of(context).unfocus(),
                             controller: confirmPasswordControllingSighUp,
                             style: Theme.of(context).textTheme.bodyMedium!
                                 .copyWith(color: Colors.black),
@@ -274,9 +284,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                   });
                                 },
                                 child: Icon(
-                                  isSecured2
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
+                                  isSecured2 ? Icons.visibility_off : Icons.visibility,
                                 ),
                               ),
                               hintText: 'Confirm Password',
@@ -285,6 +293,7 @@ class _AuthScreenState extends State<AuthScreen> {
                             ),
                           ),
                         ),
+
 
                       const SizedBox(height: 20),
 

@@ -275,11 +275,11 @@ class _HomeTabState extends State<HomeTab> {
     await Future.delayed(const Duration(milliseconds: 800));
 
     // Scroll to top
-    eventController.animateTo(
-      0.0,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOut,
-    );
+      eventController.animateTo(
+        0.0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
     restuarantController.animateTo(
       0.0,
       duration: const Duration(milliseconds: 300),

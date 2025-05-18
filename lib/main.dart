@@ -78,7 +78,7 @@ class MyApp extends StatelessWidget {
                   ModalRoute.of(context)!.settings.arguments as HotelRoom,
             ),
       },
-      initialRoute: AuthScreen.routeName,
+      initialRoute: SplashScreen.routeName,
     );
   }
 }
