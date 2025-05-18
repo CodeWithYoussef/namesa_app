@@ -11,6 +11,7 @@ import 'admin/admin screens/admin_reserved_events.dart';
 import 'admin/admin screens/admin_reserved_restaurants.dart';
 import 'admin/admin screens/admin_reserved_rooms.dart';
 import 'admin/admin screens/admin_screen.dart';
+import 'admin/admin screens/admin_service.dart';
 import 'auth screens/auth_screen.dart';
 import 'firebase_options.dart';
 import 'home screens/home_screen.dart';
@@ -60,20 +61,20 @@ class MyApp extends StatelessWidget {
       theme: lightTheme.themeData,
       routes: {
         AdminScreen.routeName: (context) => const AdminScreen(),
-        AdminReservedRestaurants.routeName:
-            (context) => const AdminReservedRestaurants(),
+        AdminReservedRestaurants.routeName: (context) =>
+            const AdminReservedRestaurants(),
         AdminReservedEvents.routeName: (context) => const AdminReservedEvents(),
-        AdminReservedRooms.routeName: (context) => const AdminReservedRooms(),
+        AdminService.routeName: (context) => const AdminService(),
+        AdminReservedRooms.routeName: (context) => AdminReservedRooms(),
         SplashScreen.routeName: (context) => const SplashScreen(),
         AuthScreen.routeName: (context) => const AuthScreen(),
         HomeScreen.routeName: (context) => const HomeScreen(),
         HomeTab.routeName: (context) => HomeTab(),
         FavouritesTab.routeName: (context) => const FavouritesTab(),
-        ReservationsTab.routeName: (context) => const ReservationsTab(),
+        ReservationsTab.routeName: (context) => ReservationsTab(),
         ProfileTab.routeName: (context) => const ProfileTab(),
         NotificationsScreen.routeName: (context) => const NotificationsScreen(),
-        ReserveRoom.routeName:
-            (context) => ReserveRoom(
+        ReserveRoom.routeName: (context) => ReserveRoom(
               hotelRoom:
                   ModalRoute.of(context)!.settings.arguments as HotelRoom,
             ),

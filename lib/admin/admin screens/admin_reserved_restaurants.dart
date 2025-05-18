@@ -1,18 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:namesa_yassin_preoject/widgets/reserved_resturant_item.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/hotel_rooms.dart';
+import '../../models/resturant_model.dart';
+import '../../widgets/reserved_resturant_item.dart';
 
-class AdminReservedRestaurants extends StatelessWidget {
+class AdminReservedRestaurants extends StatefulWidget {
   static const String routeName = "Admin Reserved Restaurants";
 
   const AdminReservedRestaurants({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final restaurants = Provider.of<HotelRooms>(context).reservedRestaurants;
+  State<AdminReservedRestaurants> createState() => _AdminReservedRestaurantsState();
+}
 
+class _AdminReservedRestaurantsState extends State<AdminReservedRestaurants> {
+  List<ResturantModel> _adminReservedRestaurants = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    loadAdminReservedRestaurants();
+  }
+
+  Future<void> loadAdminReservedRestaurants() async {
+    final provider = Provider.of<HotelRooms>(context, listen: false);
+    final restaurants = await provider.loadAllReservedRestaurantsAdmin();
+    setState(() {
+      _adminReservedRestaurants = restaurants;
+      _isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -21,7 +43,7 @@ class AdminReservedRestaurants extends StatelessWidget {
           "Reserved Restaurants",
           style: Theme.of(context).textTheme.bodyLarge,
         ),
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
@@ -29,45 +51,38 @@ class AdminReservedRestaurants extends StatelessWidget {
         ),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body:
-          restaurants.isEmpty
-              ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.restaurant,
-                      size: 64,
-                      color: Colors.grey.shade600,
-                    ),
-                    const SizedBox(height: 16),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 22.0),
-                      child: Text(
-                        "No Restaurants Are Reserved Now",
-                        softWrap: true,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                    ),
-                  ],
-                ),
-              )
-              : ListView.builder(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                scrollDirection: Axis.vertical,
-                physics: const BouncingScrollPhysics(),
-                itemCount: restaurants.length,
-                itemBuilder: (context, index) {
-                  return ReservedRestaurantItem(
-                    reservedRestaurant: restaurants[index],
-                    onTap: () {},
-                  );
-                },
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _adminReservedRestaurants.isEmpty
+          ? Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.restaurant, size: 64, color: Colors.grey.shade600),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 22.0),
+              child: Text(
+                "No Restaurants Are Reserved Now",
+                softWrap: true,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
+            ),
+          ],
+        ),
+      )
+          : ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        physics: const BouncingScrollPhysics(),
+        itemCount: _adminReservedRestaurants.length,
+        itemBuilder: (context, index) {
+          return ReservedRestaurantItem(
+            reservedRestaurant: _adminReservedRestaurants[index],
+            onTap: () {},
+          );
+        },
+      ),
     );
   }
 }

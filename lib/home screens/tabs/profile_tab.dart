@@ -13,8 +13,9 @@ class ProfileTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-    final userName =
-        user?.displayName ?? user?.email?.split('@').first.trim() ?? "Guest";
+    final String userNameLocaly = user?.displayName?.trim().isNotEmpty == true
+        ? user!.displayName!
+        : (user?.email?.split('@').first.trim() ?? "Guest");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -55,7 +56,7 @@ class ProfileTab extends StatelessWidget {
                             ),
                             child: Center(
                               child: Text(
-                                userName,
+                                userNameLocaly,
                                 style: Theme.of(context).textTheme.bodyMedium
                                     ?.copyWith(color: Colors.white),
                               ),
@@ -76,7 +77,7 @@ class ProfileTab extends StatelessWidget {
                             ),
                             child: Center(
                               child: Text(
-                                user?.email ?? '',
+                                user?.email ?? 'Tell him that i love u 1000000 time ',
                                 style: Theme.of(context).textTheme.bodyMedium
                                     ?.copyWith(color: Colors.white),
                               ),

@@ -40,6 +40,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     const String adminEmail = "main.namesa@gmail.com";
 
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
@@ -336,6 +337,7 @@ class _AuthScreenState extends State<AuthScreen> {
                             }
 
                             if (guest != null) {
+                              print(guest.mail);
                               if (guest.mail?.toLowerCase() ==
                                   adminEmail.toLowerCase()) {
                                 Navigator.pushNamedAndRemoveUntil(

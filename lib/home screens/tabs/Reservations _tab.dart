@@ -11,10 +11,11 @@ import '../../widgets/reserved_resturant_item.dart';
 class ReservationsTab extends StatelessWidget {
   static const String routeName = "reservations tab";
 
-  const ReservationsTab({super.key});
+    ReservationsTab({super.key});
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -93,7 +94,15 @@ class ReservationsTab extends StatelessWidget {
                         return ReservationItem(
                           reservedRoom: reservedRoom,
                           onTap: () {
-                            showServices(context, reservedRoom);
+                            if(reservedRoom.needService!){
+                              showServices(context, reservedRoom,);
+                            }
+                            else{
+                              return;
+                            }
+
+
+
                           },
                         );
                       },
@@ -257,6 +266,7 @@ class ReservationsTab extends StatelessWidget {
     bool foodDelivery = reservedRoom.foodDelivery ?? false;
     bool laundry = reservedRoom.laundry ?? false;
 
+
     double basePrice = reservedRoom.price;
 
     showDialog(
@@ -351,9 +361,11 @@ class ReservationsTab extends StatelessWidget {
                     reservedRoom.foodDelivery = foodDelivery;
                     reservedRoom.laundry = laundry;
                     reservedRoom.extraPrice = extraCharge;
+                    HotelRooms().sendUserServices(reservedRoom);
+                    reservedRoom.needService=false;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Your Reservation Is Pending ⏳'),
+                        content: Text('Your requested services is pending ⏳'),
                         backgroundColor:
                             Theme.of(
                               context,

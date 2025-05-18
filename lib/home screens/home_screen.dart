@@ -4,6 +4,8 @@ import 'package:namesa_yassin_preoject/home%20screens/tabs/Reservations%20_tab.d
 import 'package:namesa_yassin_preoject/home%20screens/tabs/home_tab.dart';
 import 'package:namesa_yassin_preoject/home%20screens/tabs/favourites_tab.dart';
 import 'package:namesa_yassin_preoject/home%20screens/tabs/profile_tab.dart';
+import 'package:namesa_yassin_preoject/models/hotel_rooms.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = "home screen";
@@ -21,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> tabs = [
     HomeTab(),
     const FavouritesTab(),
-    const ReservationsTab(),
+     ReservationsTab(),
     const ProfileTab(),
   ];
 
@@ -42,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
           currentIndex: currentIndex,
           onTap: (index) {
             setState(() {
+
               currentIndex = index; // ✅ Rebuilds the UI with the new screen
             });
           },

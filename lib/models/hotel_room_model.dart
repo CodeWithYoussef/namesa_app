@@ -9,13 +9,20 @@ class HotelRoom {
   final bool wifi;
   final bool gym;
 
+
+
   // New fields
     bool? roomService;
     bool? foodDelivery;
     bool? laundry;
     double extraPrice;
-
+    bool? needService;
+    bool?isDone;
+    String? uid;
   HotelRoom({
+    this.uid=" ",
+    this.isDone=false,
+    this. needService=true,
     required this.id,
     required this.name,
     required this.price,

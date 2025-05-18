@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:namesa_yassin_preoject/admin/admin%20screens/admin_service.dart';
 import 'package:namesa_yassin_preoject/models/hotel_rooms.dart';
 import 'package:provider/provider.dart';
 
@@ -36,7 +37,8 @@ class AdminScreen extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 22),
             child: Column(
-              mainAxisSize: MainAxisSize.min,  // Shrink to fit content height
+              mainAxisSize: MainAxisSize.min,
+              // Shrink to fit content height
               children: [
                 ///SizedBox
                 SizedBox(height: 18),
@@ -46,129 +48,161 @@ class AdminScreen extends StatelessWidget {
                   children: [
                     Container(
                       width: double.infinity,
-                      height: 320,
+                      height: 430,
                       decoration: BoxDecoration(
                         color: Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
 
-                    ///Reserved Rooms
-                    Positioned(
-                      bottom: 210,
-                      right: 72,
-                      child: Card(
-                        color: Colors.transparent,
-                        elevation: 0,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              AdminReservedRooms.routeName,
-                            );
-                          },
-                          child: Container(
-                            width: 230,
-                            height: 75,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Reserved Rooms",
-                                style: Theme.of(
+                    /// Centered Column of Buttons
+                    Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(
+                            height: 16,
+                          ),
+                          /// Reserved Rooms
+                          Card(
+                            color: Colors.transparent,
+                            elevation: 0,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
                                   context,
-                                ).textTheme.bodyMedium!.copyWith(
-                                  color: Theme.of(context).focusColor,
-                                  fontWeight: FontWeight.bold,
+                                  AdminReservedRooms.routeName,
+                                );
+                              },
+                              child: Container(
+                                width: 230,
+                                height: 75,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "Reserved Rooms",
+                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                      color: Theme.of(context).focusColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
 
-                    ///Reserved Restaurants
-                    Positioned(
-                      bottom: 120,
-                      right: 72,
-                      child: Card(
-                        color: Colors.transparent,
-                        elevation: 0,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              AdminReservedRestaurants.routeName,
-                            );
-                          },
-                          child: Container(
-                            width: 230,
-                            height: 75,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Reserved Restaurants",
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.bodyMedium!.copyWith(
-                                  color: Theme.of(context).focusColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                          const SizedBox(height: 20),
 
-                    ///Reserved Events
-                    Positioned(
-                      bottom: 30,
-                      right: 72,
-                      child: Card(
-                        color: Colors.transparent,
-                        elevation: 0,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              AdminReservedEvents.routeName,
-                            );
-                          },
-                          child: Container(
-                            width: 230,
-                            height: 75,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Reserved Events",
-                                style: Theme.of(
+                          /// Reserved Restaurants
+                          Card(
+                            color: Colors.transparent,
+                            elevation: 0,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
                                   context,
-                                ).textTheme.bodyMedium!.copyWith(
-                                  color: Theme.of(context).focusColor,
-                                  fontWeight: FontWeight.bold,
+                                  AdminReservedRestaurants.routeName,
+                                );
+                              },
+                              child: Container(
+                                width: 230,
+                                height: 75,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "Reserved Restaurants",
+                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                      color: Theme.of(context).focusColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
+
+                          const SizedBox(height: 20),
+
+                          /// Reserved Events
+                          Card(
+                            color: Colors.transparent,
+                            elevation: 0,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  AdminReservedEvents.routeName,
+                                );
+                              },
+                              child: Container(
+                                width: 230,
+                                height: 75,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "Reserved Events",
+                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                      color: Theme.of(context).focusColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          /// Services
+                          Card(
+                            color: Colors.transparent,
+                            elevation: 0,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  AdminService.routeName,
+                                );
+                              },
+                              child: Container(
+                                width: 230,
+                                height: 75,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "Services",
+                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                      color: Theme.of(context).focusColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
+
                 SizedBox(height: 32),
                 buttonMaker(
                   context,
-                      () async {
+                  () async {
                     ///Circular Progress Indicator
                     showDialog(
                       context: context,
@@ -182,8 +216,7 @@ class AdminScreen extends StatelessWidget {
 
                     ///log out
                     try {
-                      final authProvider =
-                      Provider.of<AuthenticationProvider>(
+                      final authProvider = Provider.of<AuthenticationProvider>(
                         context,
                         listen: false,
                       );
@@ -220,15 +253,15 @@ class AdminScreen extends StatelessWidget {
   }
 
   Widget buttonMaker(
-      BuildContext context,
-      void Function() onTap,
-      String text,
-      double height,
-      double width,
-      Color backGroundColor,
-      Color borderColor,
-      Color textColor,
-      ) {
+    BuildContext context,
+    void Function() onTap,
+    String text,
+    double height,
+    double width,
+    Color backGroundColor,
+    Color borderColor,
+    Color textColor,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: GestureDetector(
@@ -245,9 +278,9 @@ class AdminScreen extends StatelessWidget {
             child: Text(
               text,
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: textColor,
-                fontWeight: FontWeight.bold,
-              ),
+                    color: textColor,
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
           ),
         ),

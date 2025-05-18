@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:namesa_yassin_preoject/models/service_model.dart';
 
 import 'event_model.dart';
 import 'hotel_room_model.dart';
@@ -71,7 +72,6 @@ class HotelRooms extends ChangeNotifier {
       extraPrice: 0,
     ),
   ];
-
   final _allRestaurants = <ResturantModel>[
     ResturantModel(
       name: "Golden Palace",
@@ -124,7 +124,6 @@ class HotelRooms extends ChangeNotifier {
       description: "Asian Cuisine.",
     ),
   ];
-
   final List<EventModel> _allEvents = [
     EventModel(
       name: "Amr Diab",
@@ -157,7 +156,6 @@ class HotelRooms extends ChangeNotifier {
       price2: 1500,
     ),
   ];
-
   final List<String> _menu = [
     "assets/menus/Rehab Horizon menu 1.jpg",
     "assets/menus/Rehab Horizon menu 2.jpg",
@@ -170,7 +168,6 @@ class HotelRooms extends ChangeNotifier {
     "assets/menus/flame royal 2.jpg",
     "assets/menus/flame royal 3.jpg",
   ];
-
   List<HotelRoom> _filteredRooms = [];
   List<ResturantModel> _filteredRestaurants = [];
   List<EventModel> _filteredEvents = [];
@@ -239,8 +236,35 @@ class HotelRooms extends ChangeNotifier {
   }
 
   // ------------------ Cancel Reservation ------------------ //
-  void cancelRoomReservation(HotelRoom room) {
+  Future<void> cancelRoomReservation(HotelRoom room) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    // Remove locally
     if (_reservedRooms.remove(room)) notifyListeners();
+
+    // Remove reservation document from Firestore
+    final reservationSnapshot = await FirebaseFirestore.instance
+        .collection('reservations')
+        .where('userId', isEqualTo: user.uid)
+        .where('category', isEqualTo: 'room')
+        .where('roomId', isEqualTo: room.id)
+        .get();
+
+    for (final doc in reservationSnapshot.docs) {
+      await doc.reference.delete(); // ❌ Delete the full reservation doc
+    }
+
+    // Delete user services document
+    final serviceDocRef =
+    FirebaseFirestore.instance.collection('services').doc(user.uid);
+
+    final serviceDoc = await serviceDocRef.get();
+    if (serviceDoc.exists) {
+      await serviceDocRef.delete(); // ❌ Delete the full services doc
+    }
+
+    notifyListeners();
   }
 
   void cancelRestaurantReservation(ResturantModel restaurant) {
@@ -259,10 +283,8 @@ class HotelRooms extends ChangeNotifier {
   bool isEventReserved(EventModel event) => _reservedEvents.contains(event);
 
   // ------------------ Save to Firestore ------------------ //
-  Future<void> saveToReservations(
-    String category,
-    Map<String, dynamic> data,
-  ) async {
+  Future<void> saveToReservations(String category,
+      Map<String, dynamic> data,) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
@@ -273,7 +295,7 @@ class HotelRooms extends ChangeNotifier {
       'status': 'pending', // 👈 Add this line
       'timestamp': FieldValue.serverTimestamp(),
     });
-
+    notifyListeners();
   }
 
   // ------------------ Favorites ------------------ //
@@ -357,7 +379,8 @@ class HotelRooms extends ChangeNotifier {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    final userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);
+    final userDoc = FirebaseFirestore.instance.collection('users').doc(
+        user.uid);
 
     final userData = {
       'name': user.displayName ?? '',
@@ -368,6 +391,7 @@ class HotelRooms extends ChangeNotifier {
 
     // Use set with merge:true so you don't overwrite existing data unintentionally
     await userDoc.set(userData, SetOptions(merge: true));
+    notifyListeners();
   }
 
   // ------------------ Load User Data ------------------------ //
@@ -385,10 +409,10 @@ class HotelRooms extends ChangeNotifier {
 
     // Get all reservations of this user
     final snapshot =
-        await FirebaseFirestore.instance
-            .collection('reservations')
-            .where('userId', isEqualTo: uid)
-            .get();
+    await FirebaseFirestore.instance
+        .collection('reservations')
+        .where('userId', isEqualTo: uid)
+        .get();
 
     for (final doc in snapshot.docs) {
       final data = doc.data();
@@ -406,7 +430,7 @@ class HotelRooms extends ChangeNotifier {
         final name = data['name'] as String?;
         if (name != null) {
           final restaurant = _allRestaurants.firstWhereOrNull(
-            (r) => r.name == name,
+                (r) => r.name == name,
           );
           if (restaurant != null &&
               !_reservedRestaurants.contains(restaurant)) {
@@ -427,11 +451,150 @@ class HotelRooms extends ChangeNotifier {
     notifyListeners();
   }
 
+  ///load reserved rooms for admin
+  Future<List<HotelRoom>> loadAllReservedRoomsAdmin() async {
+    List<HotelRoom> adminReservedRooms = [];
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection('reservations')
+        .where('category', isEqualTo: 'room')
+        .get();
+
+    for (final doc in snapshot.docs) {
+      final data = doc.data();
+      final roomId = data['roomId'] as String?;
+
+      if (roomId != null) {
+        final room = _allRooms.firstWhereOrNull((r) => r.id == roomId);
+        if (room != null && !adminReservedRooms.contains(room)) {
+          adminReservedRooms.add(room);
+        }
+      }
+    }
+
+    return adminReservedRooms;
+  }
+
+  ///load restaurant for admin
+  Future<List<ResturantModel>> loadAllReservedRestaurantsAdmin() async {
+    List<ResturantModel> adminReservedRestaurants = [];
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection('reservations')
+        .where('category', isEqualTo: 'restaurant')
+        .get();
+
+    for (final doc in snapshot.docs) {
+      final data = doc.data();
+      final name = data['name'] as String?;
+
+      if (name != null) {
+        final restaurant = _allRestaurants.firstWhereOrNull(
+              (r) => r.name == name,
+        );
+        if (restaurant != null && !adminReservedRestaurants.contains(restaurant)) {
+          adminReservedRestaurants.add(restaurant);
+        }
+      }
+    }
+
+    return adminReservedRestaurants;
+  }
+  ///load event for admin
+  Future<List<EventModel>> loadAllReservedEventsAdmin() async {
+    List<EventModel> adminReservedEvents = [];
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection('reservations')
+        .where('category', isEqualTo: 'event')
+        .get();
+
+    for (final doc in snapshot.docs) {
+      final data = doc.data();
+      final name = data['name'] as String?;
+
+      if (name != null) {
+        final event = _allEvents.firstWhereOrNull((e) => e.name == name);
+        if (event != null && !adminReservedEvents.contains(event)) {
+          adminReservedEvents.add(event);
+        }
+      }
+    }
+
+    return adminReservedEvents;
+  }
+
+
   // ------------------ Clear All Reservations ------------------ //
   void clearReservations() {
     _reservedRooms.clear();
     _reservedRestaurants.clear();
     _reservedEvents.clear();
     notifyListeners();
+  }
+
+  //--------------------SendUserServices-----------------------//
+  Future<void> sendUserServices(HotelRoom hotelRoom) async
+  {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final serviceDocs = FirebaseFirestore.instance.collection('services').doc(
+        user.uid);
+    final services = {
+      'uid': user.uid,
+      'Room Service': hotelRoom.roomService,
+      'foodDelivery': hotelRoom.foodDelivery,
+      'laundry': hotelRoom.laundry,
+      'extraPrice': hotelRoom.extraPrice,
+      'needService': hotelRoom.needService,
+      'ServiceDone': hotelRoom.isDone,
+      'price':hotelRoom.price,
+    };
+    await serviceDocs.set(services, SetOptions(merge: true));
+    notifyListeners();
+  }
+  Future<List<ServiceModel>> loadAllUserServices() async {
+    final snapshot = await FirebaseFirestore.instance.collection('services').get();
+
+    List<ServiceModel> allServices = [];
+
+    for (final doc in snapshot.docs) {
+      final data = doc.data();
+      final service = ServiceModel.fromMap(data);
+      allServices.add(service);
+    }
+
+    return allServices;
+    notifyListeners();
+
+  }
+  Future<void> markServiceAsDone(String uid) async {
+    final docRef = FirebaseFirestore.instance.collection('services').doc(uid);
+
+    await docRef.update({
+      'ServiceDone': true,
+    });
+    notifyListeners();
+
+  }
+  Future<List<ServiceModel>> loadUserServicesById(String uid) async {
+    final docRef = FirebaseFirestore.instance.collection('services').doc(uid);
+    final docSnapshot = await docRef.get();
+
+    if (!docSnapshot.exists) return [];
+
+    final service = ServiceModel.fromMap(docSnapshot.data()!);
+    return [service];
+  }
+  Future<void> deleteUserService(String uid) async {
+    final docRef = FirebaseFirestore.instance.collection('services').doc(uid);
+
+    try {
+      await docRef.delete();
+      print('Service for user $uid deleted.');
+    } catch (e) {
+      print('Failed to delete service: $e');
+    }
   }
 }
