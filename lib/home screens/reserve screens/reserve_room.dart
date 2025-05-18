@@ -86,7 +86,7 @@ class _ReserveRoomState extends State<ReserveRoom> {
                         "assets/pictures/gym.png",
                         widget.hotelRoom.gym,
                       ),
-                      const SizedBox(height: 70),
+                      const SizedBox(height: 40),
                       GestureDetector(
                         onTap:
                             () => showPopUpDetails(context, widget.hotelRoom),
@@ -222,12 +222,17 @@ class _ReserveRoomState extends State<ReserveRoom> {
                               label: "Check-Out Date",
                               date: selectedCheckOutDate,
                               onTap: () async {
+                                final DateTime checkIn =
+                                    selectedCheckInDate ?? DateTime.now();
                                 final DateTime? picked = await showDatePicker(
                                   context: context,
-                                  initialDate:
-                                      selectedCheckInDate ?? DateTime.now(),
-                                  firstDate:
-                                      selectedCheckInDate ?? DateTime.now(),
+                                  initialDate: checkIn.add(
+                                    const Duration(days: 1),
+                                  ),
+                                  firstDate: checkIn.add(
+                                    const Duration(days: 1),
+                                  ),
+                                  // 👈 Enforces different date
                                   lastDate: DateTime.now().add(
                                     const Duration(days: 365),
                                   ),
@@ -238,6 +243,7 @@ class _ReserveRoomState extends State<ReserveRoom> {
                                 }
                               },
                             ),
+
                             const SizedBox(height: 16),
                             Row(
                               children: [
@@ -441,6 +447,7 @@ class _ReserveRoomState extends State<ReserveRoom> {
                                           hotelRoomProvider.reserveRoom(
                                             widget.hotelRoom,
                                           );
+                                          Navigator.pop(context);
                                           Navigator.pop(context);
                                           ScaffoldMessenger.of(
                                             context,

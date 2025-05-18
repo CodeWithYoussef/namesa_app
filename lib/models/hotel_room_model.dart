@@ -9,6 +9,12 @@ class HotelRoom {
   final bool wifi;
   final bool gym;
 
+  // New fields
+    bool? roomService;
+    bool? foodDelivery;
+    bool? laundry;
+    double extraPrice;
+
   HotelRoom({
     required this.id,
     required this.name,
@@ -19,14 +25,16 @@ class HotelRoom {
     this.numOfBeds = 1.0,
     this.wifi = false,
     this.gym = false,
+    this.laundry = false,
+    this.roomService = false,    // default value
+    this.foodDelivery = false,   // default value
+    this.extraPrice = 0.0,
   });
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is HotelRoom &&
-              runtimeType == other.runtimeType &&
-              id == other.id;
+      other is HotelRoom && runtimeType == other.runtimeType && id == other.id;
 
   @override
   int get hashCode => id.hashCode;

@@ -17,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0; // ✅ Move this INSIDE the state class
 
+
   List<Widget> tabs = [
     HomeTab(),
     const FavouritesTab(),

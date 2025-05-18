@@ -1,10 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:namesa_yassin_preoject/home%20screens/home_screen.dart';
 import 'package:namesa_yassin_preoject/models/guest_model.dart';
+import 'package:provider/provider.dart';
 
+import '../admin/admin screens/admin_screen.dart';
 import '../auth provider/auth_provider.dart';
-import '../home screens/tabs/home_tab.dart';
+import '../models/hotel_rooms.dart';
 import '../services/auth_service.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -37,6 +38,8 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
+    const String adminEmail = "main.namesa@gmail.com";
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
@@ -289,7 +292,6 @@ class _AuthScreenState extends State<AuthScreen> {
                       ElevatedButton(
                         onPressed: () async {
                           if (formKey.currentState!.validate()) {
-                            // Show loading dialog before async operation
                             showDialog(
                               context: context,
                               barrierDismissible: false,
@@ -313,28 +315,39 @@ class _AuthScreenState extends State<AuthScreen> {
                                 guest = await auth.loginWithEmailAndPassword(
                                   emailControllingLogIn.text.trim(),
                                   passwordControllingLogIn.text.trim(),
+                                  context,
                                 );
                               }
                             } catch (e) {
                               debugPrint('Error: $e');
                             } finally {
-                              // Close the loading dialog only if the widget is still mounted
                               if (mounted) {
-                                Navigator.pop(
-                                  context,
-                                ); // Close the loading dialog
+                                Navigator.pop(context);
                               }
                             }
 
                             if (guest != null) {
-                              // Successful login/signup, navigate to the home screen
-                              Navigator.pushNamedAndRemoveUntil(
-                                context,
-                                HomeScreen.routeName,
-                                (route) => false,
-                              );
+                              if (guest.mail?.toLowerCase() ==
+                                  adminEmail.toLowerCase()) {
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  AdminScreen.routeName,
+                                  (route) => false,
+                                );
+                              } else {
+                                final hotelRooms = Provider.of<HotelRooms>(
+                                  context,
+                                  listen: false,
+                                );
+                                await hotelRooms.loadReservationsForUser();
+
+                                Navigator.pushNamedAndRemoveUntil(
+                                  context,
+                                  HomeScreen.routeName,
+                                  (route) => false,
+                                );
+                              }
                             } else {
-                              // Show an error dialog if registration/login fails
                               showDialog(
                                 context: context,
                                 builder:
@@ -356,7 +369,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                         ),
                                       ),
                                       content: Text(
-                                        'Login/Registration failed. Please check your credentials or verify your email.',
+                                        "Please check your inbox to verify your email and login\n\nIf you didn't receive the verification mail, please check your credentials and try signing up again",
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall!
@@ -437,37 +450,49 @@ class _AuthScreenState extends State<AuthScreen> {
                                       horizontal: 40,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Colors.black,
+                                      color: Colors.transparent,
                                       borderRadius: BorderRadius.circular(30),
                                     ),
                                     child: GestureDetector(
                                       onTap: () async {
                                         final authService =
                                             AuthenticationProvider();
-                                        final userCredential =
-                                            await authService
-                                                .signInWithGoogle();
 
                                         // Show loading dialog before async operation
                                         showDialog(
                                           context: context,
                                           barrierDismissible: false,
                                           builder:
-                                              (
-                                                BuildContext context,
-                                              ) => const Center(
+                                              (BuildContext context) => Center(
                                                 child:
-                                                    CircularProgressIndicator(),
+                                                    CircularProgressIndicator(
+                                                      color:
+                                                          Theme.of(
+                                                            context,
+                                                          ).primaryColor,
+                                                    ),
                                               ),
                                         );
 
+                                        // Wait for a short delay to ensure the loader is visible
+                                        await Future.delayed(
+                                          Duration(milliseconds: 200),
+                                        );
+
+                                        // Now perform the sign-in
+                                        final userCredential = await authService
+                                            .signInWithGoogle(context);
+
+                                        // Dismiss the loading dialog
+                                        Navigator.pop(context);
+
+                                        // Handle result
                                         if (userCredential != null) {
                                           Navigator.pushNamedAndRemoveUntil(
                                             context,
                                             HomeScreen.routeName,
                                             (route) => false,
                                           );
-
                                           debugPrint(
                                             'Signed in as: ${userCredential.user?.displayName}',
                                           );
@@ -485,14 +510,10 @@ class _AuthScreenState extends State<AuthScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Text(
-                                            "Sign In With Google",
-                                            style: Theme.of(
-                                              context,
-                                            ).textTheme.bodyMedium!.copyWith(
-                                              color:
-                                                  Theme.of(context).focusColor,
-                                            ),
+                                          Image.asset(
+                                            "assets/pictures/google logo.webp",
+                                            width: 40,
+                                            height: 40,
                                           ),
                                         ],
                                       ),

@@ -1,17 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:namesa_yassin_preoject/models/hotel_rooms.dart';
-import 'package:namesa_yassin_preoject/models/resturant_model.dart';
 import 'package:provider/provider.dart';
+import '../models/event_model.dart';
 
-import '../models/hotel_room_model.dart';
+class FavouriteEventItem extends StatelessWidget {
+  final EventModel favouriteEvent;
+  final VoidCallback? onTap;
 
-class FavouriteRestaurantsteItem extends StatelessWidget {
-  final ResturantModel favouriteResturant;
-
-  const FavouriteRestaurantsteItem({
+  const FavouriteEventItem({
     super.key,
-    required this.favouriteResturant,
+    required this.favouriteEvent,
+    this.onTap,
   });
 
   @override
@@ -20,22 +19,22 @@ class FavouriteRestaurantsteItem extends StatelessWidget {
       builder:
           (context, value, child) => ListTile(
             leading: Image.asset(
-              "${favouriteResturant.imagePath}",
+              "${favouriteEvent.imagePath}",
               width: 100,
               height: 100,
               fit: BoxFit.fill,
             ),
             title: Text(
-              favouriteResturant.name ?? 'No Name',
+              "${favouriteEvent.name}",
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             subtitle: Text(
-              '${favouriteResturant.rating} ⭐',
-              style: Theme.of(context).textTheme.bodyMedium,
+              "VIP: ${favouriteEvent.price1?.toInt()} EGP | Normal: ${favouriteEvent.price2?.toInt()} EGP",
+              style: Theme.of(context).textTheme.bodySmall,
             ),
             trailing: GestureDetector(
               onTap: () {
-                value.removeFromFavouriteRestaurants(favouriteResturant);
+                value.removeFromFavouriteEvents(favouriteEvent);
               },
               child: Icon(Icons.delete, color: Colors.red, size: 40),
             ),

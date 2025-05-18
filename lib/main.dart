@@ -7,9 +7,14 @@ import 'package:namesa_yassin_preoject/theme/base_theme.dart';
 import 'package:namesa_yassin_preoject/theme/light_theme.dart';
 import 'package:provider/provider.dart';
 
+import 'admin/admin screens/admin_reserved_events.dart';
+import 'admin/admin screens/admin_reserved_restaurants.dart';
+import 'admin/admin screens/admin_reserved_rooms.dart';
+import 'admin/admin screens/admin_screen.dart';
 import 'auth screens/auth_screen.dart';
 import 'firebase_options.dart';
 import 'home screens/home_screen.dart';
+import 'home screens/notification tab/notifications_screen.dart';
 import 'home screens/reserve screens/reserve_room.dart';
 import 'home screens/tabs/Reservations _tab.dart';
 import 'home screens/tabs/home_tab.dart';
@@ -36,7 +41,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => HotelRooms()), // ✅ Add this
+        ChangeNotifierProvider(create: (_) => HotelRooms()),
         // You can add more providers here if needed
       ],
       child: const MyApp(),
@@ -54,6 +59,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: lightTheme.themeData,
       routes: {
+        AdminScreen.routeName: (context) => const AdminScreen(),
+        AdminReservedRestaurants.routeName:
+            (context) => const AdminReservedRestaurants(),
+        AdminReservedEvents.routeName: (context) => const AdminReservedEvents(),
+        AdminReservedRooms.routeName: (context) => const AdminReservedRooms(),
         SplashScreen.routeName: (context) => const SplashScreen(),
         AuthScreen.routeName: (context) => const AuthScreen(),
         HomeScreen.routeName: (context) => const HomeScreen(),
@@ -61,6 +71,7 @@ class MyApp extends StatelessWidget {
         FavouritesTab.routeName: (context) => const FavouritesTab(),
         ReservationsTab.routeName: (context) => const ReservationsTab(),
         ProfileTab.routeName: (context) => const ProfileTab(),
+        NotificationsScreen.routeName: (context) => const NotificationsScreen(),
         ReserveRoom.routeName:
             (context) => ReserveRoom(
               hotelRoom:

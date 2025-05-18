@@ -1,4 +1,4 @@
-import 'reservation_model.dart'; // Make sure this is correct based on your file structure
+import 'package:namesa_yassin_preoject/models/reservation_model.dart';
 
 class GuestModel {
   String? id;
@@ -16,12 +16,12 @@ class GuestModel {
   factory GuestModel.fromJson(Map<String, dynamic> json, String id) {
     return GuestModel(
       id: id,
-      name: json['name'],
-      mail: json['mail'],
-      reservations:
-          (json['reservations'] as List<dynamic>?)
-              ?.map((resJson) => ReservationModel.fromJson(resJson))
-              .toList(),
+      name: json['name'] ?? "Guest",
+      mail: json['mail'] ?? "",
+      reservations: (json['reservations'] as List<dynamic>?)
+          ?.map((resJson) => ReservationModel.fromJson(resJson))
+          .toList() ??
+          [],
     );
   }
 

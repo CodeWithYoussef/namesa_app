@@ -1,15 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:namesa_yassin_preoject/auth%20provider/auth_provider.dart';
+import 'package:namesa_yassin_preoject/home%20screens/reserve%20screens/reserve_event.dart';
 import 'package:namesa_yassin_preoject/home%20screens/reserve%20screens/reserve_restaurant.dart';
+import 'package:namesa_yassin_preoject/models/event_model.dart';
 import 'package:namesa_yassin_preoject/models/hotel_room_model.dart';
 import 'package:namesa_yassin_preoject/models/hotel_rooms.dart';
 import 'package:namesa_yassin_preoject/models/resturant_model.dart';
+import 'package:namesa_yassin_preoject/widgets/event_item.dart';
 import 'package:provider/provider.dart';
 
 import '../../widgets/resturanant_item.dart';
 import '../../widgets/rooms_item.dart';
 import '../../widgets/search_bar_widget.dart';
+import '../notification tab/notifications_screen.dart';
 import '../reserve screens/reserve_room.dart';
 
 class HomeTab extends StatefulWidget {
@@ -23,6 +27,10 @@ class HomeTab extends StatefulWidget {
 
 class _HomeTabState extends State<HomeTab> {
   final TextEditingController searchBarController = TextEditingController();
+  final ScrollController eventController = ScrollController();
+  final ScrollController restuarantController = ScrollController();
+  final ScrollController roomsController = ScrollController();
+  final ScrollController pageController = ScrollController();
 
   @override
   void dispose() {
@@ -33,7 +41,8 @@ class _HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-    final userName = user?.displayName ?? user?.email?.split('@').first.trim() ?? "Guest";
+    final userName =
+        user?.displayName ?? user?.email?.split('@').first.trim() ?? "Guest";
 
     return SafeArea(
       child: RefreshIndicator(
@@ -43,6 +52,7 @@ class _HomeTabState extends State<HomeTab> {
           body: Consumer<HotelRooms>(
             builder:
                 (context, value, child) => SingleChildScrollView(
+                  controller: pageController,
                   physics: ClampingScrollPhysics(),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 22),
@@ -62,7 +72,18 @@ class _HomeTabState extends State<HomeTab> {
                                   .copyWith(color: Colors.white),
                             ),
                             const Spacer(),
-                            Icon(Icons.notifications_active_outlined, size: 30),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  NotificationsScreen.routeName,
+                                );
+                              },
+                              child: Icon(
+                                Icons.notifications_active_outlined,
+                                size: 30,
+                              ),
+                            ),
                           ],
                         ),
 
@@ -104,6 +125,7 @@ class _HomeTabState extends State<HomeTab> {
                             : SizedBox(
                               height: 340,
                               child: ListView.separated(
+                                controller: roomsController,
                                 itemBuilder: (context, index) {
                                   HotelRoom eachRoom = value.allRooms[index];
                                   return RoomsItem(
@@ -157,6 +179,7 @@ class _HomeTabState extends State<HomeTab> {
                             : SizedBox(
                               height: 340,
                               child: ListView.separated(
+                                controller: restuarantController,
                                 itemBuilder: (context, index) {
                                   ResturantModel eachResturant =
                                       value.allResturant[index];
@@ -184,6 +207,60 @@ class _HomeTabState extends State<HomeTab> {
                                 physics: BouncingScrollPhysics(),
                               ),
                             ),
+
+                        SizedBox(height: 16),
+
+                        /// Restaurants title row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Events",
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ],
+                        ),
+
+                        SizedBox(height: 25),
+
+                        value.allEvents.isEmpty
+                            ? Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                "No events found",
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            )
+                            : SizedBox(
+                              height: 340,
+                              child: ListView.separated(
+                                controller: eventController,
+                                itemBuilder: (context, index) {
+                                  EventModel eachEvent = value.allEvents[index];
+                                  return EventItem(
+                                    reservedEvent: eachEvent,
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => ReserveEvent(
+                                                event: value.allEvents[index],
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                separatorBuilder:
+                                    (context, index) => SizedBox(width: 16),
+                                scrollDirection: Axis.horizontal,
+                                itemCount: value.allEvents.length,
+                                physics: BouncingScrollPhysics(),
+                              ),
+                            ),
+
+                        SizedBox(height: 16),
                       ],
                     ),
                   ),
@@ -196,6 +273,27 @@ class _HomeTabState extends State<HomeTab> {
 
   Future<void> _refresh() async {
     await Future.delayed(const Duration(milliseconds: 800));
-    setState(() {});
+
+    // Scroll to top
+    eventController.animateTo(
+      0.0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+    restuarantController.animateTo(
+      0.0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+    roomsController.animateTo(
+      0.0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+    pageController.animateTo(
+      0.0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
   }
 }

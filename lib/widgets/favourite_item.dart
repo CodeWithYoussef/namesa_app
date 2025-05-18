@@ -15,13 +15,18 @@ class FavouriteItem extends StatelessWidget {
     return Consumer<HotelRooms>(
       builder:
           (context, value, child) => ListTile(
-            leading: Image.asset(favouriteRoom.imagePath),
+            leading: Image.asset(
+              favouriteRoom.imagePath,
+              width: 100,
+              height: 100,
+              fit: BoxFit.fill,
+            ),
             title: Text(
               favouriteRoom.name,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             subtitle: Text(
-              '${favouriteRoom.price} EGP',
+              '${favouriteRoom.price} USD',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             trailing: GestureDetector(
