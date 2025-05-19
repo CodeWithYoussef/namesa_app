@@ -539,10 +539,10 @@ class HotelRooms extends ChangeNotifier {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    final serviceDocs = FirebaseFirestore.instance.collection('services').doc(
-        user.uid);
+    final serviceDocs = FirebaseFirestore.instance.collection('services').doc();
     final services = {
       'uid': user.uid,
+      'guestName':user.displayName??"MO",
       'Room Service': hotelRoom.roomService,
       'foodDelivery': hotelRoom.foodDelivery,
       'laundry': hotelRoom.laundry,
@@ -570,31 +570,40 @@ class HotelRooms extends ChangeNotifier {
 
   }
   Future<void> markServiceAsDone(String uid) async {
-    final docRef = FirebaseFirestore.instance.collection('services').doc(uid);
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('services')
+        .where('uid', isEqualTo: uid)
+        .get();
 
-    await docRef.update({
-      'ServiceDone': true,
-    });
+    for (var doc in querySnapshot.docs) {
+      await doc.reference.update({
+        'ServiceDone': true,
+      });
+    }
+
     notifyListeners();
-
   }
   Future<List<ServiceModel>> loadUserServicesById(String uid) async {
-    final docRef = FirebaseFirestore.instance.collection('services').doc(uid);
-    final docSnapshot = await docRef.get();
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('services')
+        .where('uid', isEqualTo: uid)
+        .get();
 
-    if (!docSnapshot.exists) return [];
-
-    final service = ServiceModel.fromMap(docSnapshot.data()!);
-    return [service];
+    return querySnapshot.docs.map((doc) {
+      return ServiceModel.fromMap(doc.data());
+    }).toList();
   }
   Future<void> deleteUserService(String uid) async {
-    final docRef = FirebaseFirestore.instance.collection('services').doc(uid);
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('services')
+        .where('uid', isEqualTo: uid)
+        .get();
 
-    try {
-      await docRef.delete();
-      print('Service for user $uid deleted.');
-    } catch (e) {
-      print('Failed to delete service: $e');
+    for (final doc in querySnapshot.docs) {
+      await doc.reference.delete();
     }
+
+    print('All services for user $uid deleted.');
   }
+
 }

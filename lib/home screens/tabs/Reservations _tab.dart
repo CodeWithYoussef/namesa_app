@@ -361,7 +361,7 @@ class ReservationsTab extends StatelessWidget {
                     reservedRoom.foodDelivery = foodDelivery;
                     reservedRoom.laundry = laundry;
                     reservedRoom.extraPrice = extraCharge;
-                    HotelRooms().sendUserServices(reservedRoom);
+                    Provider.of<HotelRooms>(context,listen: false).sendUserServices(reservedRoom);
                     reservedRoom.needService=false;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(

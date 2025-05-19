@@ -41,7 +41,7 @@ class _AdminServiceState extends State<AdminService> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         centerTitle: true,
         title: Text(
-          "Reserved Rooms",
+          "Reserved Rooms Services",
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         iconTheme: IconThemeData(color: Colors.white),
@@ -56,14 +56,15 @@ class _AdminServiceState extends State<AdminService> {
           : _allServices.isEmpty
               ? const Center(child: Text("No services requested."))
               : ListView.builder(
+                  physics: BouncingScrollPhysics(),
                   itemCount: _allServices.length,
                   itemBuilder: (context, index) {
                     return DisplayServiceForAdmin(
-                      serviceModel: _allServices[index], onApprove: () {
-                        setState(() {
-
-                        });
-                        _allServices.removeAt(index);  },
+                      serviceModel: _allServices[index],
+                      onApprove: () {
+                        setState(() {});
+                        _allServices.removeAt(index);
+                      },
                     );
                   },
                 ),
